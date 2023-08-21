@@ -18,8 +18,8 @@ const Navbar = ({ homepage }) => {
     const closePopup = (e) => {
       if (
         !ref.current &&
-        !ref.current.contains(e.target) &&
         e != undefined &&
+        !ref.current.contains(e.target) &&
         !ref2.current.contains(e.target)
       ) {
         setShowDropwdown(false);

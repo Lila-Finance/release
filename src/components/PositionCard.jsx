@@ -114,7 +114,7 @@ const Card = ({ homepage, poolAddress, NFTAddress, id, type, num }) => {
     args: [id],
   });
 
-  console.log(nftData);
+//   console.log(nftData);
 
   const [fixed_rate, setFixedRate] = useState(0);
   const [fixed_limit, setFixedLimit] = useState(0);
@@ -138,7 +138,6 @@ const Card = ({ homepage, poolAddress, NFTAddress, id, type, num }) => {
     return `${days}d ${hours}h ${minutes}m ${remainingSeconds}s`;
   }
 
-  // const [varInterest, setInterest] = useState(0);
   useEffect(() => {
     if (data === undefined) {
       setFixedRate(0);
@@ -151,7 +150,6 @@ const Card = ({ homepage, poolAddress, NFTAddress, id, type, num }) => {
       setPoolStatus(false); 
       setLockDuration(0);
       setRunTime(0);
-      setInterest(0);
     } else {
       setFixedRate((+formatEther(data[4].result[0])).toFixed(2));
       setFixedLimit((+formatEther(data[0].result)).toFixed(2));
@@ -161,35 +159,10 @@ const Card = ({ homepage, poolAddress, NFTAddress, id, type, num }) => {
       setVarDeposited((+formatEther(data[3].result)).toFixed(2));
       setPoolTime(Number(data[9].result));
       setPoolStatus(data[7].result);
-      setLockDuration((+formatEther(data[8].result)).toFixed(2));
+      setLockDuration(data[8].result);
       setRunTime(Number(data[9].result));
     }
   }, [data]);
-
-  useEffect(() => {
-    // Calculate the initial time remaining when the component mounts
-    const initialTimeRemaining = pool_time - lock_duration;
-    setTimeRemaining(initialTimeRemaining);
-
-    // Update the time remaining every second
-    const interval = setInterval(() => {
-      setTimeRemaining((prevTimeRemaining) => {
-        // Decrease the time remaining by 1 second
-        const updatedTimeRemaining = prevTimeRemaining - 1;
-
-        // If the time remaining is less than or equal to 0, clear the interval
-        if (updatedTimeRemaining <= 0) {
-          clearInterval(interval);
-        }
-        return updatedTimeRemaining;
-      });
-    }, 1000);
-
-    // Clear the interval when the component unmounts
-    return () => {
-      clearInterval(interval);
-    };
-  }, [lock_duration, pool_time]);
 
   const nft_amount = nftData != null ? formatEther(nftData.amount) : "null";
   //toggle pool info
@@ -198,43 +171,8 @@ const Card = ({ homepage, poolAddress, NFTAddress, id, type, num }) => {
     setShowPoolInfo(!showPoolInfo);
   };
 
-  const getExpiryDate = () => {
-    let lock_duration = 2592000;
-    const daysSinceStart = Math.floor(start_time / (60 * 60 * 24));
-    const startDate = new Date(currentDate);
-    startDate.setDate(startDate.getDate() - daysSinceStart);
-    const lockDurationInDays = Math.floor( lock_duration / (60 * 60 * 24));
-    const finalDate = new Date(startDate);
-    finalDate.setDate(finalDate.getDate() + lockDurationInDays);
 
-    const options = {  year: "numeric", month: "short", day: "numeric" };
-    const formattedDate = finalDate.toLocaleDateString("en-US", options);
-    return formattedDate;
-  }
-
-  const renderTimeRemaining = () => {
-    if (timeRemaining <= 0) {
-      // Time remaining is negative or zero, show "Expiry" and the formatted date
-      return (
-        <>
-          <div className="w-full text-start">Expiry</div>
-          <div className="w-full text-end">
-            <p className="text-[15px]">{getExpiryDate()}</p>
-          </div>
-        </>
-      );
-    } else {
-      // Time remaining is positive, show the formatted time remaining
-      return (
-        <>
-          <div className="w-full text-start">Time Until Maturity</div>
-          <div className="w-full text-end">
-            <p className="text-[15px]">{formatTime(timeRemaining)}</p>
-          </div>
-        </>
-      );
-    }
-  };
+  let days = Math.round(Number(lock_duration) / 86400);
 
   return (
     <div
@@ -245,7 +183,7 @@ const Card = ({ homepage, poolAddress, NFTAddress, id, type, num }) => {
       {/* Title */}
       <div className="px-6 py-6 border-b border-b-themeColor text-center">
         <p className="text-base leading-none">
-        {type.charAt(0).toUpperCase() + type.slice(1)} {token} {Math.round(Number(data[8].result) / 86400)} Days
+        {type.charAt(0).toUpperCase() + type.slice(1)} {token} {days} Days
         </p>
       </div>
       {/* Toggle Categories */}
@@ -373,7 +311,6 @@ const Card = ({ homepage, poolAddress, NFTAddress, id, type, num }) => {
 
           {/* right */}
           <div className="w-full text-end">
-            {console.log(pool_status)}
             <p className="text-[15px]">0 of 1</p>
           </div>
         </div>
@@ -381,7 +318,7 @@ const Card = ({ homepage, poolAddress, NFTAddress, id, type, num }) => {
 
         {/* Row 3 */}
         <div className="w-full flex justify-between items-center my-6">
-          {renderTimeRemaining()}
+          {/* {renderTimeRemaining()} */}
         </div>
         
       </div>

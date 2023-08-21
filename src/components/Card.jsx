@@ -301,7 +301,7 @@ const Card = ({ homepage, num, type }) => {
     if (isSuccess) {
       if (fixedAmount) {
         supplyFixed();
-        alert("Transaction successful");
+        // alert("Transaction successful");
       } else {
         supplyVariable();
       }
@@ -309,8 +309,8 @@ const Card = ({ homepage, num, type }) => {
   }, [isSuccess]);
 
   if (isSuccess) {
-    alert("Transaction successful!");
-    console.log(isSuccess);
+    // alert("Transaction successful!");
+    // console.log(isSuccess);
   }
 
   const supply = async () => {
@@ -330,7 +330,7 @@ const Card = ({ homepage, num, type }) => {
         } else {
           supplyVariable();
         }
-        alert("Transaction processing...");
+        // alert("Transaction processing...");
       }
     } else {
       allow();
@@ -339,7 +339,7 @@ const Card = ({ homepage, num, type }) => {
 
   useEffect(() => {
     if (data) {
-      console.log(data);
+    //   console.log(data);
     }
   }, [data]);
 

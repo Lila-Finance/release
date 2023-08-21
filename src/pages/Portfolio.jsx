@@ -86,7 +86,7 @@ const Portfolio = () => {
       });
       // flatten by result from fixedNftIds so id goes from 0 to total
       let fixedNFTs = [];
-      console.log(fixedNFTotals);
+    //   console.log(fixedNFTotals);
       for (const fixedNFTotal of fixedNFTotals) {
         for (let i = 0; i < fixedNFTotal.total; i++) {
           const id = await publicClient?.readContract({
@@ -102,7 +102,7 @@ const Portfolio = () => {
           });
         }
       }
-      console.log(fixedNFTs);
+    //   console.log(fixedNFTs);
       setFixedNFTs(fixedNFTs);
     }
     if (fixedNftAddresses && fixedNftIds) {
@@ -169,12 +169,6 @@ const Portfolio = () => {
     },
   ];
 
-  const [currentFilter, setCurrentFilter] = useState(0);
-
-  const printFilter = (i) => {
-    setCurrentFilter(i);
-    console.log(currentFilter);
-  };
 
   return (
     <div>
