@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+#banner {
+  background-image: url("../public/images/bg.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .card {
   font-family: "Roboto", sans-serif;
 }
@@ -17,13 +24,13 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-.navlinks a.active {
-  text-decoration: underline;
-  text-underline-offset: 5px;
-  text-decoration-color: #ffc9c9;
-  text-decoration-thickness: 2px;
-}
-
 .home-card {
   user-select: none;
+}
+
+.choose-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) !important;
 }

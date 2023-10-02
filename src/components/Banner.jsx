@@ -1,38 +1,33 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import Card from "./Card";
 
 const Banner = () => {
   return (
-    <div className="w-full flex items-center justify-between gap-10 md:flex-row flex-col md:mt-0 mt-8">
-      {/* Left Side  */}
-      <div className="w-full">
-        {/* title */}
-        <h1 className="text-5xl lg:text-6xl font-medium md:text-start text-center">
-          Interest Rate Swaps
+    <>
+      {/* Logo */}
+      <div className="mt-24 flex items-center justify-center">
+        <img
+          src="./images/logo.svg"
+          alt="site_logo"
+          className="mix-blend-color-burn"
+        />
+      </div>
+
+      {/* Subheading and button */}
+      <div className="text-center mt-4 mb-20 lg:mb-40">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl 2xl:text-7xl text-black font-medium">
+          Rate Swaps
         </h1>
 
-        {/* subtitle */}
-        <h2 className="text-3xl lg:text-4xl leading-[45px] mt-12 mb-10 md:text-start text-center">
-          Fixed income DeFi markets: <br />
-          saving, lending, market making
-        </h2>
-
-        {/* buttons */}
-        <div className="md:text-start text-center">
-          <NavLink to="/market">
-            <button className="bg-themeColor lg:text-lg md:py-[10px] py-2 px-8 md:px-12 rounded-full duration-300 hover:translate-x-3">
-              Enter App
-            </button>
-          </NavLink>
-        </div>
+        {/* button */}
+        <NavLink to="/pools">
+          <button className="text-base md:text-xl lg:text-2xl text-white bg-black py-3 px-8 rounded-full mt-16 lg:mt-28 hover:translate-x-5 duration-300">
+            <span>Enter App</span>
+            <i className="fa-solid fa-arrow-right ml-2 lg:text-xl"></i>
+          </button>
+        </NavLink>
       </div>
-
-      {/* Right Side */}
-      <div className="w-full flex justify-end my-16">
-        <Card homepage={true} />
-      </div>
-    </div>
+    </>
   );
 };
 

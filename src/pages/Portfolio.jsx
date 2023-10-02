@@ -1,213 +1,163 @@
-import Card from "../components/Card";
-import PositionCard from "../components/PositionCard";
 import Navbar from "../components/Navbar";
-import Filter from "../components/Filter";
-import NoPoolsScreen from "../components/NoPoolsScreen";
-import addresses from "../addresses/addresses.json";
-import abi from "../abi/PoolDeployer.json";
-import poolAbi from "../abi/Pool.json";
-import fixedNFTAbi from "../abi/FixedNFT.json";
-import variableNFTAbi from "../abi/VariableNFT.json";
-import {
-  useContractRead,
-  useContractReads,
-  useAccount,
-  usePublicClient,
-} from "wagmi";
-import { useEffect, useState } from "react";
+import PortfolioLiquidStacking from "../components/PortfolioLiquidStacking";
+import PortfolioSingleAsset from "../components/PortfolioSingleAsset";
+import { useState, useEffect } from "react";
+import LilaPool from "../abi/LilaPool.json";
+import LilaPosition from "../abi/LilaPosition.json";
+import LilaAddressProvider from "../abi/LilaPoolAddressProvider.json";
+import { useAccount, usePublicClient, useContractWrite, useContractEvent } from "wagmi";
+import { ethers } from "ethers";
+import addresj from "../addr/addresj.json"
 
 const Portfolio = () => {
-  // get all pool addresses
-  const { address } = useAccount();
-  const { data: length } = useContractRead({
-    address: addresses.POOL_DEPLOYER_ADDRESS,
-    abi: abi.abi,
-    functionName: "getPoolLength",
-    args: [],
-  });
+    const lilaposaddr = addresj.lilaposaddr;
+    const addrprov = addresj.addrprov;
+    const [positions, setPositionss] = useState([]);
+    const [selected_position, setselected_position] = useState(0);
+    const publicClient = usePublicClient();
+    const { address } = useAccount();
+    const getPoolInfo = async (addre) => {
 
-  const { data: poolAddresses } = useContractReads({
-    contracts: [...Array(parseInt(length ?? 0))].map((_, i) => ({
-      address: addresses.POOL_DEPLOYER_ADDRESS,
-      abi: abi.abi,
-      functionName: "pools",
-      args: [i],
-    })),
-  });
+        if (publicClient) {
+            const fixedLimit = await publicClient.readContract({
+                address: addre,
+                abi: LilaPool.abi,
+                functionName: "fixedLimit",
+                args: [],
+            });
+            const fixedDepo = await publicClient.readContract({
+                address: addre,
+                abi: LilaPool.abi,
+                functionName: "totalFixedDeposits",
+                args: [],
+            });
+            const varLimit = await publicClient.readContract({
+                address: addre,
+                abi: LilaPool.abi,
+                functionName: "variableLimit",
+                args: [],
+            });
+            const varDepo = await publicClient.readContract({
+                address: addre,
+                abi: LilaPool.abi,
+                functionName: "totalVariableDeposits",
+                args: [],
+            });
+            const payouts = await publicClient.readContract({
+                address: addre,
+                abi: LilaPool.abi,
+                functionName: "payoutCount",
+                args: [],
+            });
+            const duration = await publicClient.readContract({
+                address: addre,
+                abi: LilaPool.abi,
+                functionName: "timeLength",
+                args: [],
+            });
+            const fixedLimitForm = ethers.formatEther(fixedLimit);
+            const fixedDepoForm = ethers.formatEther(fixedDepo);
+            const varLimitForm = ethers.formatEther(varLimit);
+            const varDepoForm = ethers.formatEther(varDepo);
 
-  const { data: fixedNftAddresses } = useContractReads({
-    contracts: poolAddresses?.map((pool) => ({
-      address: pool?.result,
-      abi: poolAbi.abi,
-      functionName: "fixedNFT",
-    })),
-  });
-
-  const { data: variableNftAddresses } = useContractReads({
-    contracts: poolAddresses?.map((pool) => ({
-      address: pool?.result,
-      abi: poolAbi.abi,
-      functionName: "variableNFT",
-    })),
-  });
-
-  const { data: fixedNftIds } = useContractReads({
-    contracts: fixedNftAddresses?.map((fixedNFT) => ({
-      address: fixedNFT?.result,
-      abi: fixedNFTAbi.abi,
-      functionName: "balanceOf",
-      args: [address],
-    })),
-  });
-
-  const { data: variableNftIds } = useContractReads({
-    contracts: variableNftAddresses?.map((variableNFT) => ({
-      address: variableNFT?.result,
-      abi: variableNFTAbi.abi,
-      functionName: "balanceOf",
-      args: [address],
-    })),
-  });
-
-  //public client
-  const publicClient = usePublicClient();
-
-  const [fixedNFTs, setFixedNFTs] = useState([]);
-  const [variableNFTs, setVariableNFTs] = useState([]);
-
-  useEffect(() => {
-    async function run() {
-      let fixedNFTotals = fixedNftAddresses.map((fixedNFT, i) => {
-        return {
-          poolAddress: poolAddresses[i]?.result,
-          NFTAddress: fixedNFT?.result,
-          total: Number(fixedNftIds[i]?.result),
-        };
-      });
-      // flatten by result from fixedNftIds so id goes from 0 to total
-      let fixedNFTs = [];
-    //   console.log(fixedNFTotals);
-      for (const fixedNFTotal of fixedNFTotals) {
-        for (let i = 0; i < fixedNFTotal.total; i++) {
-          const id = await publicClient?.readContract({
-            address: fixedNFTotal.NFTAddress,
-            abi: fixedNFTAbi.abi,
-            functionName: "tokenOfOwnerByIndex",
-            args: [address, i],
-          });
-          fixedNFTs.push({
-            poolAddress: fixedNFTotal.poolAddress,
-            NFTAddress: fixedNFTotal.NFTAddress,
-            id,
-          });
+            return [addre, (varLimitForm*100/fixedLimitForm)+"%", fixedDepoForm, fixedLimitForm, varDepoForm, varLimitForm, Number(payouts), (Number(duration)/60/60/24), "15"]
         }
-      }
-    //   console.log(fixedNFTs);
-      setFixedNFTs(fixedNFTs);
-    }
-    if (fixedNftAddresses && fixedNftIds) {
-      run();
-    }
-  }, [fixedNftAddresses, fixedNftIds]);
 
-  useEffect(() => {
-    async function run() {
-      let variableNFTotals = variableNftAddresses.map((variableNFT, i) => {
-        return {
-          poolAddress: poolAddresses[i]?.result,
-          NFTAddress: variableNFT?.result,
-          total: Number(variableNftIds[i]?.result),
-        };
-      });
-      // flatten by result from variableNftIds so id goes from 0 to total
-      let variableNFTs = [];
-      for (const variableNFTotal of variableNFTotals) {
-        for (let i = 0; i < variableNFTotal.total; i++) {
-          const id = await publicClient?.readContract({
-            address: variableNFTotal.NFTAddress,
-            abi: variableNFTAbi.abi,
-            functionName: "tokenOfOwnerByIndex",
-            args: [address, i],
-          });
-          variableNFTs.push({
-            poolAddress: variableNFTotal.poolAddress,
-            NFTAddress: variableNFTotal.NFTAddress,
-            id,
-          });
-        }
-      }
-      setVariableNFTs(variableNFTs);
-    }
+        return null;
+    };
+    const getPosition = async (i) => {
+        const owner = await publicClient.readContract({
+            address: lilaposaddr,
+            abi: LilaPosition.abi,
+            functionName: "ownerOf",
+            args: [i],
+            });
+        const pool = await publicClient.readContract({
+            address: lilaposaddr,
+            abi: LilaPosition.abi,
+            functionName: "lilaPool",
+            args: [i],
+            });
+        
+        const fixed = await publicClient.readContract({
+            address: pool,
+            abi: LilaPool.abi,
+            functionName: "usersMap",
+            args: [i],
+            });
 
-    if (variableNftAddresses && variableNftIds) {
-      run();
-    }
-  }, [variableNftAddresses, variableNftIds]);
+        const pool_info = await getPoolInfo(pool);
+            
+        const startDate = await publicClient.readContract({
+            address: pool,
+            abi: LilaPool.abi,
+            functionName: "poolStartTime",
+            args: [],
+            });
 
-  //toggle pool info
-  const [pastPools, setShowPastPools] = useState(false);
-  const togglePastPools = () => {
-    setShowPastPools(!pastPools);
-  };
+        const exp = Number(startDate)+Number(pool_info[6])*24*60*60;
+        var seconds = new Date().getTime() / 1000;
+        // console.log("str:"+Number(startDate))
+        // console.log("exp:"+exp)
 
-  const pool_buttons = [
-    {
-      id: 1,
-      title: "All",
-    },
-    {
-      id: 2,
-      title: "Unfilled Pools",
-    },
-    {
-      id: 3,
-      title: "Active Pools",
-    },
-    {
-      id: 4,
-      title: "Past Pools",
-    },
-  ];
+        let exdate = new Date(exp * 1000);
+        let edday = exdate.getUTCDate().toString().padStart(2, '0');  // padStart ensures it's always 2 digits
+        let edmonth = (exdate.getUTCMonth() + 1).toString().padStart(2, '0');  // +1 because months are 0-indexed
+        let edyear = exdate.getUTCFullYear();
+        let edformattedDate = `${edmonth}-${edday}-${edyear}`;
 
+        let sdate = new Date(Number(startDate) * 1000);
+        let sday = sdate.getUTCDate().toString().padStart(2, '0');  // padStart ensures it's always 2 digits
+        let smonth = (sdate.getUTCMonth() + 1).toString().padStart(2, '0');  // +1 because months are 0-indexed
+        let syear = sdate.getUTCFullYear();
+        let sformattedDate = `${smonth}-${sday}-${syear}`;
+
+        return [pool, (startDate == 0) ? "Unfilled" : ((exp > seconds) ? "Active" : "Expired"), fixed[4] ? "Fixed" : "Variable", pool_info[1], ethers.formatEther(fixed[0]) + " Dai", (Number(fixed[2])*ethers.formatEther(fixed[0])*pool_info[5]/pool_info[3])+" Dai", Number(fixed[2]), Number(pool_info[6]), sformattedDate, edformattedDate, pool_info, i]
+
+        
+    };
+    useEffect(() => {
+        const getListOfPositions = async () => {
+            const positionCount = await publicClient.readContract({
+                address: lilaposaddr,
+                abi: LilaPosition.abi,
+                functionName: "totalSupply",
+                args: [],
+                });
+            
+            let poss = [];
+            for(let i = 0; i < positionCount; i++){
+                poss.push(await getPosition(i));
+            }
+            setPositionss(poss);
+            // console.log(poss);
+          };
+    
+          getListOfPositions();
+      }, []);
+
+
+    const {
+        data: dataAllow,
+        isLoading: isLoadingAllow,
+        isSuccess: isSuccessAllow,
+        write: withdraw,
+    } = useContractWrite({
+        address: positions[selected_position] ? positions[selected_position][0] : "0",
+        abi: LilaPool.abi,
+        functionName: "withdraw",
+        args: [positions[selected_position] ? positions[selected_position][11] : 0],
+    });
 
   return (
     <div>
-      <div className="container mx-auto w-11/12 md:w-[85%] 3xl:w-[70%]">
+      <div className="container mx-auto w-11/12 lg:w-[85%] 3xl:w-[70%]">
         <Navbar />
-        {/* <Filter 
-            buttons={pool_buttons}
-            currentTab={currentFilter}
-            setCurrentTab={printFilter}
-            key="tab-content-buttons"
-        /> */}
+        {/* Single Asset Protocol */}
+        <PortfolioSingleAsset positions={positions} selected_position={selected_position} setselected_position={setselected_position} withdraw={withdraw}/>
 
-        {/* Cards */}
-        {fixedNFTs.length === 0 && variableNFTs.length === 0 ? (
-            <NoPoolsScreen />
-          ) : (
-            <div className="mt-16 mb-[10vh] lg:mb-[15vh] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 2xl:gap-24">
-              {fixedNFTs.map((fixedNFT) => (
-                <PositionCard
-                  key={fixedNFT.id} // Consider adding keys for list items for better performance
-                  poolAddress={fixedNFT.poolAddress}
-                  NFTAddress={fixedNFT.NFTAddress}
-                  id={fixedNFT.id}
-                  type="fixed"
-                />
-              ))}
-              {variableNFTs.map((variableNFT) => (
-                <PositionCard
-                  key={variableNFT.id} // Consider adding keys for list items for better performance
-                  poolAddress={variableNFT.poolAddress}
-                  NFTAddress={variableNFT.NFTAddress}
-                  id={variableNFT.id}
-                  type="variable"
-                />
-              ))}
-              </div>
-          )
-        }
-        
+        {/* Liquid Staking Protocols */}
+        {/* <PortfolioLiquidStacking /> */}
       </div>
     </div>
   );
