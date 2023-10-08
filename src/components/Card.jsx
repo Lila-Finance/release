@@ -143,11 +143,11 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
           {/* Buttons */}
           <div className="border border-themeColor w-max mx-auto rounded-full">
             <button
-              className={`text-[15px] rounded-full py-[1px] w-28 ${"bg-themeColor"}`}
+              className={`text-[15px] rounded-full py-[1px] w-28 cursor-default ${"bg-themeColor"}`}
             >
               Fixed
             </button>
-            <button className={`text-[15px] rounded-full py-[1px] w-28`}>
+            <button className={`text-[15px] rounded-full py-[1px] w-28 cursor-default`}>
               Variable
             </button>
           </div>
@@ -167,7 +167,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
 
           {/* button */}
           <div className="text-center">
-            <button className="bg-themeColor text-[15px] w-56 py-[5px] leading-none rounded-full outline-none border-none">
+            <button className="bg-themeColor cursor-default text-[15px] w-56 py-[5px] leading-none rounded-full outline-none border-none">
               Supply
             </button>
           </div>
