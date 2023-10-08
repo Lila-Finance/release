@@ -25,7 +25,9 @@ const Portfolio = () => {
     const publicClient = usePublicClient();
     const { address } = useAccount();
     const getPoolInfo = async (addre) => {
-
+        if(address === undefined || address === ""){
+            return;
+        }
         if (publicClient) {
             const fixedLimit = await publicClient.readContract({
                 address: addre,
@@ -80,6 +82,9 @@ const Portfolio = () => {
             functionName: "ownerOf",
             args: [i],
             });
+        if(address === undefined || address === ""){
+            return;
+        }
         if(owner != address){
             return []
         }
