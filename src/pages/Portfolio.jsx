@@ -83,7 +83,7 @@ const Portfolio = () => {
             args: [i],
             });
         if(address === undefined || address === ""){
-            return;
+            return [];
         }
         if(owner != address){
             return []
@@ -144,7 +144,7 @@ const Portfolio = () => {
             let poss = [];
             for(let i = 0; i < positionCount; i++){
                 let po = await getPosition(i);
-                if(po != []){
+                if(po != [] && po!=""){
                     poss.push(po);
                 }
             }
