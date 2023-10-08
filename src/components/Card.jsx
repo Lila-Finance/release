@@ -188,15 +188,17 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
   const [balance, setBalance ] = useState("0");
 
   const setCorrectInput = (val) => {
+    console.log(val)
     if(!isNaN(parseFloat(val)) && isFinite(val)){
+
         let max = 0;
         if(fixedAmount){
-            max = Math.min(pool[3]-pool[2], Number(balance));
+            max = Math.min(Number(pool[3])-Number(pool[2]), Number(balance));
         }else{
-            max = Math.min(pool[5]-pool[4], Number(balance));
+            max = Math.min(Number(pool[5])-Number(pool[4]), Number(balance));
         }
         let v = parseFloat(val);
-
+ 
         setInput(Math.min(v, max).toString());
         setText(Math.min(v, max).toString());
     }else if(val == ""){
@@ -295,6 +297,9 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
   });
 
   const supply = async () => {
+    if(text == ""){
+        return;
+    }
     if (publicClient) {
       const allowance = await publicClient.readContract({
         address: tokenAddress,
@@ -353,7 +358,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
 
   const fetchRate = async () => {
     try {
-      const response = await fetch('http://35.175.105.94/');
+      const response = await fetch('https://data.lila.finance/');
       const text = await response.text();
 
       setVarRate(text);
@@ -530,7 +535,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
 
           {/* right */}
           <div className="w-full text-end">
-            <p className="text-[15px]">X of 1</p>
+            <p className="text-[15px]">0 of 1</p>
           </div>
         </div>
       </div>
