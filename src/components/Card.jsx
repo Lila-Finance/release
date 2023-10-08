@@ -358,7 +358,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
 
   const fetchRate = async () => {
     try {
-      const response = await fetch('https://data.lila.finance/');
+      const response = await fetch('https://52.205.117.18/');
       const text = await response.text();
 
       setVarRate(text);
