@@ -2,7 +2,6 @@ import { useState } from "react";
 import BlackOverlay from "./popups/BlackOverlay";
 import PortfolioFixedPositionPopup from "./popups/PortfolioFixedPositionPopup";
 import { AnimatePresence } from "framer-motion";
-import PortfolioVariablePositionPopup from "./popups/PortfolioVariablePositionPopup";
 
 const PortfolioSingleAsset = ({positions, selected_position, setselected_position, withdraw}) => {
   // first table data
@@ -70,30 +69,26 @@ const PortfolioSingleAsset = ({positions, selected_position, setselected_positio
       {/* content wrapper */}
       <div className="w-full flex items-center justify-between lg:flex-nowrap flex-wrap gap-12 2xl:gap-[70px] mt-14">
         {/* left side */}
-        <div className="w-full h-[320px] overflow-y-auto border-2 border-themeColor py-4 px-2">
-          {/* heaidng */}
-          <div className="px-4">
-            <h3 className="text-lg lg:text-xl font-bold">
-              Your Positions
-            </h3>
-          </div>
+        <div className="w-full h-[320px] overflow-y-auto bg-white border-2 border-themeColor px-2">
 
           {/* Table */}
-          <div className="mt-3">
             <table className="w-full">
-              <tbody>
+              <thead className="sticky top-0 bg-white z-0">
                 <tr className="w-full">
-                  {firstTableHeading?.map((item, idx) => (
-                    <td
-                      key={item.id}
-                      className={`text-base xl:text-lg font-medium  ${
-                        idx === 0 ? "text-start pl-4" : "text-center"
-                      }`}
-                    >
-                      {item.title}
-                    </td>
-                  ))}
-                </tr>
+                    {firstTableHeading?.map((item, idx) => (
+                        <td
+                        key={item.id}
+                        className={`text-base xl:text-lg font-medium py-2 ${
+                            idx === 0 ? "text-start pl-4" : "text-center"
+                        }`}
+                        >
+                        {item.title}
+                        </td>
+                    ))}
+                    </tr>
+              </thead>
+              <tbody>
+                
 
                 {positions?.map((pool, index) => (
                     <tr
@@ -121,7 +116,6 @@ const PortfolioSingleAsset = ({positions, selected_position, setselected_positio
               </tbody>
             </table>
           </div>
-        </div>
       </div>
 
       <AnimatePresence initial={false}>

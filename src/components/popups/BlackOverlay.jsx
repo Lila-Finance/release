@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-const BlackOverlay = ({ close }) => {
+const BlackOverlay = ({ clo }) => {
   return (
     <motion.div
       style={{
@@ -14,7 +14,7 @@ const BlackOverlay = ({ close }) => {
       animate={{ opacity: "100" }}
       exit={{ opacity: "0" }}
       transition={{ duration: 0.4 }}
-      onClick={close}
+      onClick={clo}
     ></motion.div>
   );
 };

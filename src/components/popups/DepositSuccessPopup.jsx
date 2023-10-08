@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { NavLink } from "react-router-dom";
 
-const DepositSuccessPopup = ({ closeSwapPopup, amount }) => {
-  return (
+const DepositSuccessPopup = ({ clo, amount }) => {
+    return (
     <motion.div
       initial={{ opacity: 0, scale: 0.8, x: "-50%", y: "-50%" }}
       animate={{ opacity: 1, scale: 0.9, x: "-50%", y: "-50%" }}
@@ -44,9 +44,9 @@ const DepositSuccessPopup = ({ closeSwapPopup, amount }) => {
       <div className="text-center mt-5 mb-10">
         <button
           className="py-3 px-8 bg-themeColor lg:text-xl text-base font-bold rounded-[50px] drop-shadow-buttonShadow"
-          onClick={closeSwapPopup}
+          onClick={clo}
         >
-          Earn Fixed
+          Earn
         </button>
       </div>
     </motion.div>

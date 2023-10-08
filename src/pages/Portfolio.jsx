@@ -1,18 +1,26 @@
+import Card from "../components/Card";
+import PositionCard from "../components/PositionCard";
 import Navbar from "../components/Navbar";
-import PortfolioLiquidStacking from "../components/PortfolioLiquidStacking";
-import PortfolioSingleAsset from "../components/PortfolioSingleAsset";
-import { useState, useEffect } from "react";
+import Filter from "../components/Filter";
+import NoPoolsScreen from "../components/NoPoolsScreen";
+import addresj from '../addresses/addresj.json';
 import LilaPool from "../abi/LilaPool.json";
 import LilaPosition from "../abi/LilaPosition.json";
 import LilaAddressProvider from "../abi/LilaPoolAddressProvider.json";
 import { useAccount, usePublicClient, useContractWrite, useContractEvent } from "wagmi";
 import { ethers } from "ethers";
-import addresj from "../addr/addresj.json"
+import { useEffect, useState } from "react";
+import PortfolioSingleAsset from '../components/PortfolioSingleAsset';
 
 const Portfolio = () => {
+  // get all pool addresses
     const lilaposaddr = addresj.lilaposaddr;
     const addrprov = addresj.addrprov;
-    const [positions, setPositionss] = useState([]);
+    const [positions, setPositionss] = useState(() => {
+        const cachedPos = localStorage.getItem('positions');
+        return cachedPos ? JSON.parse(cachedPos) : [];
+    });
+
     const [selected_position, setselected_position] = useState(0);
     const publicClient = usePublicClient();
     const { address } = useAccount();
@@ -72,6 +80,9 @@ const Portfolio = () => {
             functionName: "ownerOf",
             args: [i],
             });
+        if(owner != address){
+            return []
+        }
         const pool = await publicClient.readContract({
             address: lilaposaddr,
             abi: LilaPosition.abi,
@@ -127,21 +138,23 @@ const Portfolio = () => {
             
             let poss = [];
             for(let i = 0; i < positionCount; i++){
-                poss.push(await getPosition(i));
+                let po = await getPosition(i);
+                if(po != []){
+                    poss.push(po);
+                }
             }
             setPositionss(poss);
+            localStorage.setItem('positions', JSON.stringify(poss));
             // console.log(poss);
           };
     
           getListOfPositions();
       }, []);
-
-
     const {
-        data: dataAllow,
-        isLoading: isLoadingAllow,
-        isSuccess: isSuccessAllow,
-        write: withdraw,
+    data: dataAllow,
+    isLoading: isLoadingAllow,
+    isSuccess: isSuccessAllow,
+    write: withdraw,
     } = useContractWrite({
         address: positions[selected_position] ? positions[selected_position][0] : "0",
         abi: LilaPool.abi,
@@ -151,13 +164,23 @@ const Portfolio = () => {
 
   return (
     <div>
-      <div className="container mx-auto w-11/12 lg:w-[85%] 3xl:w-[70%]">
+      <div className="container mx-auto w-11/12 md:w-[85%] 3xl:w-[70%]">
         <Navbar />
-        {/* Single Asset Protocol */}
-        <PortfolioSingleAsset positions={positions} selected_position={selected_position} setselected_position={setselected_position} withdraw={withdraw}/>
+        {/* <Filter 
+            buttons={pool_buttons}
+            currentTab={currentFilter}
+            setCurrentTab={printFilter}
+            key="tab-content-buttons"
+        /> */}
 
-        {/* Liquid Staking Protocols */}
-        {/* <PortfolioLiquidStacking /> */}
+        {/* Cards */}
+            {positions && positions.length > 0 ? (
+                    <PortfolioSingleAsset positions={positions} selected_position={selected_position} setselected_position={setselected_position} withdraw={withdraw}/>
+            ) : (
+                <NoPoolsScreen></NoPoolsScreen>
+            )}
+
+        
       </div>
     </div>
   );

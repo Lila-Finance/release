@@ -1,8 +1,7 @@
 import React from "react";
-import FixedEarnPayout from "./FixedEarnPayout";
 import LineBreak from "./LineBreak";
 import { motion } from "framer-motion";
-import addresj from "../../addr/addresj.json";
+import addresj from '../../addresses/addresj.json';
 import { useState } from "react";
 
 const PortfolioFixedPositionPopup = ({ close, position, withdraw }) => {

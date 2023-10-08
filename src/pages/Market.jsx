@@ -1,0 +1,162 @@
+import Card from "../components/Card";
+import Navbar from "../components/Navbar";
+import addresj from "../addresses/addresj.json";
+import LilaAddressProvider from "../abi/LilaPoolAddressProvider.json";
+import LilaPool from "../abi/LilaPool.json";
+import { useContractRead } from "wagmi";
+import { useState, useEffect } from "react";
+import { useAccount, usePublicClient, useContractWrite, useContractEvent } from "wagmi";
+import {ethers} from "ethers";
+import IERC20 from "../abi/IERC20.json";
+import BlackOverlay from "../components/popups/BlackOverlay";
+import DepositSuccessPopup from "../components/popups/DepositSuccessPopup";
+
+
+const Market = () => {
+    const { address } = useAccount();
+    const publicClient = usePublicClient();
+    const addrprov = addresj.addrprov;
+    const [pools, setPools] = useState(() => {
+        // Try to load pools from local storage immediately
+        const cachedPools = localStorage.getItem('pools');
+        return cachedPools ? JSON.parse(cachedPools) : [];
+    });
+    const [successDepo, setSuccessDepo] = useState(false);
+    const [successAmount, setSuccessAmount] = useState("0");
+    const getPoolInfo = async (addre) => {
+
+        if (publicClient) {
+            const fixedLimit = await publicClient.readContract({
+                address: addre,
+                abi: LilaPool.abi,
+                functionName: "fixedLimit",
+                args: [],
+            });
+            const fixedDepo = await publicClient.readContract({
+                address: addre,
+                abi: LilaPool.abi,
+                functionName: "totalFixedDeposits",
+                args: [],
+            });
+            const varLimit = await publicClient.readContract({
+                address: addre,
+                abi: LilaPool.abi,
+                functionName: "variableLimit",
+                args: [],
+            });
+            const varDepo = await publicClient.readContract({
+                address: addre,
+                abi: LilaPool.abi,
+                functionName: "totalVariableDeposits",
+                args: [],
+            });
+            const payouts = await publicClient.readContract({
+                address: addre,
+                abi: LilaPool.abi,
+                functionName: "payoutCount",
+                args: [],
+            });
+            const duration = await publicClient.readContract({
+                address: addre,
+                abi: LilaPool.abi,
+                functionName: "timeLength",
+                args: [],
+            });
+            const fixedLimitForm = ethers.formatEther(fixedLimit);
+            const fixedDepoForm = ethers.formatEther(fixedDepo);
+            const varLimitForm = ethers.formatEther(varLimit);
+            const varDepoForm = ethers.formatEther(varDepo);
+
+            return [addre, (varLimitForm*100/fixedLimitForm)+"%", fixedDepoForm, fixedLimitForm, varDepoForm, varLimitForm, Number(payouts), (Number(duration)/60/60/24), "15"]
+        }
+
+        return null;
+    };
+    const getAddressBalance = async () => {
+        if (publicClient) {
+            let walletAddress = address;
+            const BALANCE = await publicClient.readContract({
+                address: "0xFF34B3d4Aee8ddCd6F9AFFFB6Fe49bD371b8a357",
+                abi: IERC20.abi,
+                functionName: "balanceOf",
+                args: [walletAddress],
+            });
+            return ethers.formatEther(BALANCE);
+        }
+    
+        return ethers.formatEther(0);
+      };
+      const getListOfPools = async () => {
+        const poolsCount = await publicClient.readContract({
+            address: addrprov,
+            abi: LilaAddressProvider.abi,
+            functionName: "getOpenPools",
+            args: [],
+            });
+
+            // console.log(poolsCount);
+            let final_pools = [];
+        for(let i = 0; i < poolsCount; i++){
+            const ithpools = await publicClient.readContract({
+                address: addrprov,
+                abi: LilaAddressProvider.abi,
+                functionName: "getPool",
+                args: [i],
+                });
+            
+            // console.log(ithpools);
+            const pool = await getPoolInfo(ithpools);
+            final_pools.push(pool)
+            
+        }
+        setPools(final_pools);
+        localStorage.setItem('pools', JSON.stringify(final_pools));
+      };
+
+    useEffect(() => {
+        // Define an async function
+        
+    
+          getListOfPools();
+      }, []);
+
+      const clo = () => {
+        setSuccessDepo(false);
+        getListOfPools();
+      }
+  return (
+    <div>
+      <div className="container mx-auto w-11/12 md:w-[85%] 3xl:w-[70%]">
+        <Navbar />
+        {/* <a href="https://sepoliafaucet.com/" target="_blank">Sepolia ETH Faucet</a>
+        <br />
+        <a href="https://staging.aave.com/faucet/" target="_blank">Token Faucets</a> */}
+        <h1 className="text-3xl lg:text-4xl 2xl:text-5xl mt-4">
+            Single Asset Protocols
+        </h1>
+        {/* Cards */}
+        <div className="mt-12 mb-[8vh] lg:mb-[16vh] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 2xl:gap-19.2">
+            {pools && pools.length > 0 ? (
+                pools.map((pool, index) => <Card homepage={false} 
+                key={index} pool={pool} 
+                getAddressBalance={getAddressBalance} 
+                setSuccessAmount={setSuccessAmount}
+                setSuccessDepo={setSuccessDepo}/>))
+             : (
+                <div className="text-center text-2xl font-bold">
+                    No Pools available
+                </div>
+            )}
+        </div>
+        {successDepo === true ? (
+            <>
+              <BlackOverlay clo={clo} />
+              <DepositSuccessPopup clo={clo} amount={successAmount}/>
+            </>
+          ) : null}
+      </div>
+    </div>
+  );
+};
+
+export default Market;
