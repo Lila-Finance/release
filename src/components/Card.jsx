@@ -373,7 +373,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
       if (storedData) {
         setVarRate(storedData);
       }
-    }
+    } 
   };
   useEffect(() => {
     fetchRate();
