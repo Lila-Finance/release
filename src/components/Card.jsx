@@ -358,9 +358,10 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
 
   const fetchRate = async () => {
     try {
-      const response = await fetch('https://data.lila.finance/');
+      const response = await fetch('https://lila-finance.github.io/rates/DAI.txt');
+    //   console.log(response);
       const text = await response.text();
-
+      console.log(text);
       setVarRate(text);
       
       // Store in local storage
@@ -377,7 +378,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
   useEffect(() => {
     fetchRate();
     
-    const interval = setInterval(fetchRate, 300000);
+    const interval = setInterval(fetchRate, 100000);
     
     return () => clearInterval(interval);
   }, []);
