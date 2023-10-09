@@ -1,5 +1,4 @@
 import Card from "../components/Card";
-import PositionCard from "../components/PositionCard";
 import Navbar from "../components/Navbar";
 import Filter from "../components/Filter";
 import NoPoolsScreen from "../components/NoPoolsScreen";

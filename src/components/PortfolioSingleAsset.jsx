@@ -98,7 +98,7 @@ const PortfolioSingleAsset = ({positions, selected_position, setselected_positio
                     >
 
                     <td className="text-start py-3 pl-4">
-                        <a target="_blank" href={`https://sepolia.etherscan.io/${pool[0]}`}>
+                        <a target="_blank" href={`https://sepolia.etherscan.io/address/${pool[0]}`}>
                             {pool[0].slice(0, 10)}...
                             <i class="fa fa-external-link" aria-hidden="true"></i>
                         </a>
@@ -109,8 +109,8 @@ const PortfolioSingleAsset = ({positions, selected_position, setselected_positio
                     <td className="text-center py-3 pl-4">{pool[4]}</td>
                     <td className="text-center py-3 pl-4">{pool[5]}</td>
                     <td className="text-center py-3 pl-4">{pool[6]+"/"+pool[7]}</td>
-                    <td className="text-center py-3 pl-4">{pool[8]}</td>
-                    <td className="text-center py-3 pl-4">{pool[9]}</td>
+                    <td className="text-center py-3 pl-4">{pool[8]=="01-01-1970" ? "Not Started" : pool[8]}</td>
+                    <td className="text-center py-3 pl-4">{pool[8]=="01-01-1970" ? "Not Started" : pool[8]}</td>
                   </tr>
                 ))}
               </tbody>
