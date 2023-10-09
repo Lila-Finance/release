@@ -381,16 +381,17 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
     
     return () => clearInterval(interval);
   }, []);
-
-  const daysSinceStart = 0;
-  const startDate = new Date(currentDate);
-  startDate.setDate(startDate.getDate() - daysSinceStart);
   
-  const lockDurationInDays = pool[7] * 2;
-  const finalDate = new Date(startDate);
-  finalDate.setDate(finalDate.getDate() + lockDurationInDays);
-
   const options = {  year: "numeric", month: "short", day: "numeric" };
+
+  // Calculate days until next Sunday
+  let daysUntilSunday = 7 - currentDate.getUTCDay();
+   if (daysUntilSunday === 7) daysUntilSunday = 0; // If today is Sunday, set to 0
+   // Set the date to the next Sunday
+  const finalDate = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate() + daysUntilSunday));
+
+  // Set the time to Sunday night (assuming 11:59:59 PM is your definition of night)
+  finalDate.setUTCHours(23, 59, 59, 999);
   const formattedDate = finalDate.toLocaleDateString("en-US", options);
   // toggle state
   const selectFixedAmount = () => {
