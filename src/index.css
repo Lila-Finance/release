@@ -27,3 +27,11 @@ input[type="number"] {
 .home-card {
   user-select: none;
 }
+
+
+#lilabanner {
+    background-image: url("../public/images/bg.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }

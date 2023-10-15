@@ -4,9 +4,10 @@ import { motion } from "framer-motion";
 import addresj from '../../addresses/addresj.json';
 import { useState } from "react";
 
-const PortfolioFixedPositionPopup = ({ close, position, withdraw }) => {
-    
+const PortfolioFixedPositionPopup = ({ close, position, withdraw, successWith, setSuccessWith }) => {
+
   const [claiming, setClaiming] = useState(false);
+  const [claimingPrinc, setClaimingPrinc] = useState(false);
   // earn fixed popup details data
   const fixedPDD = [
     {
@@ -96,10 +97,24 @@ const PortfolioFixedPositionPopup = ({ close, position, withdraw }) => {
   ];
 
   const claimPayoutC = () => {
-    console.log("Claiming");
+    // console.log("Claiming");
     setClaiming(true);
+    setClaimingPrinc(false);
     withdraw();
   }
+  const claimPrincC = () => {
+    // console.log("Claiming");
+    setClaimingPrinc(true);
+    setClaiming(false);
+    setSuccessWith(false);
+    withdraw();
+  }
+  const subclose = () => {
+    setClaiming(false);
+    setClaimingPrinc(false);
+    close();
+  }
+  console.log("S"+successWith+" P"+ claimingPrinc+" C"+ claiming)
 
   return (
     <motion.div
@@ -117,7 +132,7 @@ const PortfolioFixedPositionPopup = ({ close, position, withdraw }) => {
 
         <button
           className="text-base lg:text-xl bg-themeColor py-[6px] px-10 rounded-[15px] drop-shadow-buttonShadow hover:-translate-x-2 duration-200"
-          onClick={close}
+          onClick={subclose}
         >
           Back
         </button>
@@ -156,13 +171,13 @@ const PortfolioFixedPositionPopup = ({ close, position, withdraw }) => {
       {/* content */}
       <div className="w-full mt-6">
         <h3 className="text-lg md:text-xl xl:text-2xl text-black font-extrabold mb-1">
-          Payout History
+          Payouts
         </h3>
 
         <LineBreak />
       </div>
 
-      {/* payout content */}
+
       <div className="w-full flex items-center justify-between gap-8 md:flex-nowrap flex-wrap mt-8">
         {/* left side */}
         {/* <div className="w-full md:w-9/12">
@@ -173,36 +188,123 @@ const PortfolioFixedPositionPopup = ({ close, position, withdraw }) => {
             <div className="w-full">
                 <p className="text-base lg:text-lg font-semibold">Payouts</p>
             </div>
+        </div>
 
-            <div className="text-center">
+        
+        <div className="flex items-center justify-between">
+
+            <div className="text-left">
                 <p className="text-base px-2 lg:text-lg font-normal">{position[6]+"/"+position[7]}</p>
             </div>
         </div>
+        
 
-
+        {successWith && claiming && !claimingPrinc ? (
+            <div className="w-full md:w-3/12">
+                <button className="w-6/12 mx-auto md:w-full text-base lg:text-lg bg-green-500 py-[6px] px-2 rounded-full font-semibold">
+                    <p>Claimed!</p>
+                </button>
+            </div>
+        ) : (
+            <div className="w-full md:w-3/12">
             
-        <div className="w-full md:w-3/12">
             {claiming === true ? (
-                <button className="w-6/12 mx-auto md:w-full text-base lg:text-lg bg-buttonBG py-[6px] px-2 rounded-full font-semibold">
-                  <div className="flex items-center justify-center gap-2">
+                <button className="w-6/12 mx-auto md:w-full text-base lg:text-lg bg-gray-300 py-[6px] px-2 rounded-full font-semibold">
+                <div className="flex items-center justify-center gap-2">
                     <i className="fa-solid fa-spinner fa-spin"></i>
                     <p>Claiming</p>
-                  </div>
+                </div>
                 </button>
-              ) : (
+            ) : (
+                <div>
+                    {position[6] === position[7] ? 
+                    (
+                        <button className="w-6/12 mx-auto md:w-full text-base lg:text-lg bg-gray-300 py-[6px] px-2 rounded-full font-semibold">
+                            Claimed
+                        </button>
+                    ) : (
+                        <button onClick={claimPayoutC} className="w-6/12 mx-auto md:w-full text-base lg:text-lg bg-themeColor py-[6px] px-2 rounded-full font-semibold">
+                            Claim
+                        </button>
+                    )}
+                </div>
                 
-                    <button onClick={claimPayoutC} className="w-6/12 mx-auto md:w-full text-base lg:text-lg bg-themeColor py-[6px] px-2 rounded-full font-semibold">
-                        Claim
-                    </button>
-                
-              )}
-        </div>
+            )}
+          
+    </div>
+        )}
         
-
-
-        {/* right side */}
         
       </div>
+      {/* {position[2] == "Fixed" ? () : (
+      )} */}
+      {position[2] == "Fixed" ? (
+            <div className="w-full flex items-center justify-between gap-8 md:flex-nowrap flex-wrap mt-8">
+            
+            <div className="flex items-center justify-between">
+    
+                <div className="w-full">
+                    <p className="text-base lg:text-lg font-semibold">Principal</p>
+                </div>
+            </div>
+    
+            
+            <div className="flex items-center justify-between">
+    
+                <div className="text-left">
+                    <p className="text-base px-2 lg:text-lg font-normal">{position[12] ? "Claimed" : "Unclaimed"}</p>
+                </div>
+            </div>
+            
+    
+            {successWith && claimingPrinc && !claiming ? (
+                <div className="w-full md:w-3/12">
+                    <button className="w-6/12 mx-auto md:w-full text-base lg:text-lg bg-green-500 py-[6px] px-2 rounded-full font-semibold">
+                        <p>Claimed!</p>
+                    </button>
+                </div>
+            ) : (
+                <div className="w-full md:w-3/12">
+                
+                    {claimingPrinc === true ? (
+                        <button className="w-6/12 mx-auto md:w-full text-base lg:text-lg bg-gray-300 py-[6px] px-2 rounded-full font-semibold">
+                        <div className="flex items-center justify-center gap-2">
+                            <i className="fa-solid fa-spinner fa-spin"></i>
+                            <p>Claiming</p>
+                        </div>
+                        </button>
+                    ) : (
+                        
+                        <div>
+                            {position[6] === position[7] && !position[12] ? 
+                            (
+                                <button onClick={claimPrincC} className="w-6/12 mx-auto md:w-full text-base lg:text-lg bg-themeColor py-[6px] px-2 rounded-full font-semibold">
+                                    Claim
+                                </button>
+
+                            ) : (
+                                <button className="w-6/12 mx-auto md:w-full text-base lg:text-lg bg-gray-300 py-[6px] px-2 rounded-full font-semibold">
+                                    Claim
+                                </button>
+                            )}
+                        </div>
+                        
+                    )}
+                    
+                </div>
+            )}
+            
+    
+    
+            {/* right side */}
+            
+          </div>
+        ) : (
+            <div>
+                
+            </div>
+        )}
+
 
       {/* Swap NFT content */}
       <div className="flex items-center justify-between mt-12">

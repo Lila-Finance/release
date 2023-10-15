@@ -17,6 +17,7 @@ const Navbar = ({ homepage }) => {
   useEffect(() => {
     const closePopup = (e) => {
       if (
+        !ref &&
         !ref.current &&
         e != undefined &&
         !ref.current.contains(e.target) &&
@@ -39,11 +40,13 @@ const Navbar = ({ homepage }) => {
           homepage === true ? "justify-between" : "justify-center"
         } md:flex-nowrap flex-wrap gap-y-4 gap-10`}
       >
-        <NavLink to="/">
-          <h1 className="text-2xl md:text-[35px] lg:text-[40px]">
-            Lila Finance
-          </h1>
-        </NavLink>
+        {homepage === false ? (
+            <NavLink to="/">
+            <h1 className="text-2xl md:text-[35px] lg:text-[40px]">
+                Lila Finance
+            </h1>
+            </NavLink>
+        ) : (<div></div>)}
 
         {/* social links for homepage */}
         {homepage === true && (

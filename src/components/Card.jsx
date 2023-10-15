@@ -175,8 +175,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
       </div>
     );
   }
-  // states for toggle button
-  console.log(pool)
+
   const address = pool ? pool[0] : "0";
   const [input, setInput] = useState("0");
   const [text, setText] = useState("");
@@ -188,21 +187,22 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
   const [balance, setBalance ] = useState("0");
 
   const setCorrectInput = (val) => {
-    console.log(val)
-    if(!isNaN(parseFloat(val)) && isFinite(val)){
+    let v = parseFloat(val);
+    if(!isNaN(v) && isFinite(v)){
 
         let max = 0;
+
         if(fixedAmount){
             max = Math.min(Number(pool[3])-Number(pool[2]), Number(balance));
         }else{
-            max = Math.min(Number(pool[5])-Number(pool[4]), Number(balance));
+            let diff = Number(pool[5])-Number(pool[4]);
+            max = Math.min(diff, Number(balance));
         }
-        let v = parseFloat(val);
- 
+
         setInput(Math.min(v, max).toString());
         setText(Math.min(v, max).toString());
     }else if(val == ""){
-        setText(val);
+        setText("");
     }
   }
 
@@ -232,8 +232,8 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
                         functionName: "allowance",
                         args: [walletAddress, pool[0]],
                     });
-                    console.log("Allowance:"+allowance);
-                    console.log("Need:"+ethers.parseEther(input));
+                    // console.log("Allowance:"+allowance);
+                    // console.log("Need:"+ethers.parseEther(input));
                     if(allowance >= ethers.parseEther(input)){
                         kill = false;
                         setSupplyBool(true);
@@ -245,9 +245,9 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
             let iterationCount = 0;
         
             const intervalId = setInterval(() => {
-                console.log("gg:"+allowingBool);
+                // console.log("gg:"+allowingBool);
                 if (!kill || !allowingBool || iterationCount >= 18) {
-                    console.log("kee");
+                    // console.log("kee");
                     clearInterval(intervalId);  // Stop the interval
                     return;
                 }
@@ -264,14 +264,14 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
         abi: LilaPool.abi,
         eventName: 'Deposit',
         listener(log) {
-          if(log[0].args['poolAddr'] == pool[0] && log[0].args['who'] == walletAddress){
+            if(log[0].args['poolAddr'] == pool[0] && log[0].args['who'] == walletAddress){
                 setSupplyingBool(false);
                 setSupplyBool(true);
                 setSuccessDepo(true);
                 setText("");
-          }
+            }
         },
-     });
+    });
 
   const {
         data: dataVaraible,
@@ -297,7 +297,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
   });
 
   const supply = async () => {
-    if(text == ""){
+    if(text == "" || input == "0" || input == "0.0"){
         return;
     }
     if (publicClient) {
@@ -355,33 +355,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
 });
   let var_limit = pool[5];
   let var_deposited = pool[4];
-
-  const fetchRate = async () => {
-    try {
-      const response = await fetch('https://lila-finance.github.io/rates/DAI.txt');
-    //   console.log(response);
-      const text = await response.text();
-      console.log(text);
-      setVarRate(text);
-      
-      // Store in local storage
-      localStorage.setItem('storedVarRate', text);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      
-      const storedData = localStorage.getItem('storedVarRate');
-      if (storedData) {
-        setVarRate(storedData);
-      }
-    } 
-  };
-  useEffect(() => {
-    fetchRate();
-    
-    const interval = setInterval(fetchRate, 100000);
-    
-    return () => clearInterval(interval);
-  }, []);
+  
   
   const options = {  year: "numeric", month: "short", day: "numeric" };
 

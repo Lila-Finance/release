@@ -3,7 +3,7 @@ import BlackOverlay from "./popups/BlackOverlay";
 import PortfolioFixedPositionPopup from "./popups/PortfolioFixedPositionPopup";
 import { AnimatePresence } from "framer-motion";
 
-const PortfolioSingleAsset = ({positions, selected_position, setselected_position, withdraw}) => {
+const PortfolioSingleAsset = ({positions, selected_position, setselected_position, withdraw, successWith, setSuccessWith, getCorrectPosition}) => {
   // first table data
   const firstTableHeading = [
     {
@@ -48,7 +48,7 @@ const PortfolioSingleAsset = ({positions, selected_position, setselected_positio
 
   // Toggle Popup
   const [showFixedPositionPopup, setShowFixedPositionPopup] = useState(false);
-  const [showVariablePositionPopup, setShowVariablePositionPopup] = useState(false);
+  
 
   const openPositionPopup = (index) => {
     setselected_position(index);
@@ -57,6 +57,7 @@ const PortfolioSingleAsset = ({positions, selected_position, setselected_positio
 
   const closePositionPopup = () => {
     setShowFixedPositionPopup(false);
+    setSuccessWith(false);
   };
 
   return (
@@ -66,6 +67,7 @@ const PortfolioSingleAsset = ({positions, selected_position, setselected_positio
         Single Asset Protocols
       </h1>
 
+
       {/* content wrapper */}
       <div className="w-full flex items-center justify-between lg:flex-nowrap flex-wrap gap-12 2xl:gap-[70px] mt-14">
         {/* left side */}
@@ -74,7 +76,7 @@ const PortfolioSingleAsset = ({positions, selected_position, setselected_positio
           {/* Table */}
             <table className="w-full">
               <thead className="sticky top-0 bg-white z-0">
-                <tr className="w-full">
+                <tr key={-1} className="w-full">
                     {firstTableHeading?.map((item, idx) => (
                         <td
                         key={item.id}
@@ -90,17 +92,17 @@ const PortfolioSingleAsset = ({positions, selected_position, setselected_positio
               <tbody>
                 
 
-                {positions?.map((pool, index) => (
+                {positions?.map((pool) => (
                     <tr
-                        onClick={() => openPositionPopup(index)}
-                        key={pool.id}  // you might want to use a unique identifier from the pool object as the key
+                        onClick={() => openPositionPopup(pool[11])}
+                        key={pool[11]}  // you might want to use a unique identifier from the pool object as the key
                         className="bg-white hover:drop-shadow-buttonShadow duration-200 cursor-pointer"
                     >
 
                     <td className="text-start py-3 pl-4">
                         <a target="_blank" href={`https://sepolia.etherscan.io/address/${pool[0]}`}>
                             {pool[0].slice(0, 10)}...
-                            <i class="fa fa-external-link" aria-hidden="true"></i>
+                            <i className="fa fa-external-link" aria-hidden="true"></i>
                         </a>
                     </td>
                     <td className="text-start py-3 pl-4">{pool[1]}</td>
@@ -110,7 +112,7 @@ const PortfolioSingleAsset = ({positions, selected_position, setselected_positio
                     <td className="text-center py-3 pl-4">{pool[5]}</td>
                     <td className="text-center py-3 pl-4">{pool[6]+"/"+pool[7]}</td>
                     <td className="text-center py-3 pl-4">{pool[8]=="01-01-1970" ? "Not Started" : pool[8]}</td>
-                    <td className="text-center py-3 pl-4">{pool[8]=="01-01-1970" ? "Not Started" : pool[8]}</td>
+                    <td className="text-center py-3 pl-4">{pool[9]=="01-01-1970" ? "Not Started" : pool[9]}</td>
                   </tr>
                 ))}
               </tbody>
@@ -122,7 +124,7 @@ const PortfolioSingleAsset = ({positions, selected_position, setselected_positio
         {showFixedPositionPopup === true ? (
           <>
             <BlackOverlay close={closePositionPopup} />
-            <PortfolioFixedPositionPopup close={closePositionPopup} position={positions[selected_position]} withdraw={withdraw}/>
+            <PortfolioFixedPositionPopup close={closePositionPopup} position={getCorrectPosition(selected_position)} withdraw={withdraw} successWith={successWith} setSuccessWith={setSuccessWith}/>
           </>
         ) : null}
       </AnimatePresence>

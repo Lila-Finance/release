@@ -6,7 +6,7 @@ import LilaPool from "../abi/LilaPool.json";
 import { useContractRead } from "wagmi";
 import { useState, useEffect } from "react";
 import { useAccount, usePublicClient, useContractWrite, useContractEvent } from "wagmi";
-import {ethers} from "ethers";
+import { ethers } from "ethers";
 import IERC20 from "../abi/IERC20.json";
 import BlackOverlay from "../components/popups/BlackOverlay";
 import DepositSuccessPopup from "../components/popups/DepositSuccessPopup";
@@ -66,8 +66,11 @@ const Market = () => {
             const fixedDepoForm = ethers.formatEther(fixedDepo);
             const varLimitForm = ethers.formatEther(varLimit);
             const varDepoForm = ethers.formatEther(varDepo);
+            const time = Number(BigInt("31536000")/duration); // 105120
+            const APY = Number(1+varLimitForm/fixedLimitForm); // 1.5
+            const value = ((APY ** time) - 1)*100;
 
-            return [addre, (varLimitForm*100/fixedLimitForm)+"%", fixedDepoForm, fixedLimitForm, varDepoForm, varLimitForm, Number(payouts), (Number(duration)/60/60/24), "15"]
+            return [addre, value.toFixed(2)+"%", fixedDepoForm, fixedLimitForm, varDepoForm, varLimitForm, Number(payouts), (Number(duration)/60/60/24), "15"]
         }
 
         return null;
@@ -90,7 +93,7 @@ const Market = () => {
         const poolsCount = await publicClient.readContract({
             address: addrprov,
             abi: LilaAddressProvider.abi,
-            functionName: "getOpenPools",
+            functionName: "openPoolsLength",
             args: [],
             });
 
@@ -100,7 +103,7 @@ const Market = () => {
             const ithpools = await publicClient.readContract({
                 address: addrprov,
                 abi: LilaAddressProvider.abi,
-                functionName: "getPool",
+                functionName: "openPools",
                 args: [i],
                 });
             
@@ -113,11 +116,12 @@ const Market = () => {
         localStorage.setItem('pools', JSON.stringify(final_pools));
       };
 
-    useEffect(() => {
-        // Define an async function
+      useEffect(() => {
+        getListOfPools();
         
-    
-          getListOfPools();
+        const interval = setInterval(getListOfPools, 100000);
+        
+        return () => clearInterval(interval);
       }, []);
 
       const clo = () => {
@@ -127,13 +131,18 @@ const Market = () => {
   return (
     <div>
       <div className="container mx-auto w-11/12 md:w-[85%] 3xl:w-[70%]">
-        <Navbar />
+        <Navbar homepage={false}/>
         {/* <a href="https://sepoliafaucet.com/" target="_blank">Sepolia ETH Faucet</a>
         <br />
         <a href="https://staging.aave.com/faucet/" target="_blank">Token Faucets</a> */}
-        <h1 className="text-3xl lg:text-4xl 2xl:text-5xl mt-4">
-            Single Asset Protocols
-        </h1>
+        <div className="flex items-center justify-between">
+            <h1 className="text-3xl lg:text-4xl 2xl:text-5xl mt-4">
+                Single Asset Protocols
+            </h1>
+            <h1 className="text-3xl lg:text-4xl 2xl:text-5xl mt-4 pr-10">
+                $15,283 TVL
+            </h1>
+        </div>
         {/* Cards */}
         <div className="mt-12 mb-[8vh] lg:mb-[16vh] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 2xl:gap-19.2">
             {pools && pools.length > 0 ? (

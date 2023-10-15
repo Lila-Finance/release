@@ -20,13 +20,22 @@ const Portfolio = () => {
         return cachedPos ? JSON.parse(cachedPos) : [];
     });
 
+    const getCorrectPosition = (tokenID) => {
+        for(let i = 0; i < positions.length; i++){
+            if(positions[i][11] == tokenID){
+                return positions[i];
+            }
+        }
+        return undefined;
+    } 
+
     const [selected_position, setselected_position] = useState(0);
+    const [successWith, setSuccessWith] = useState(false);
+
     const publicClient = usePublicClient();
     const { address } = useAccount();
     const getPoolInfo = async (addre) => {
-        if(address === undefined || address === ""){
-            return;
-        }
+
         if (publicClient) {
             const fixedLimit = await publicClient.readContract({
                 address: addre,
@@ -68,8 +77,11 @@ const Portfolio = () => {
             const fixedDepoForm = ethers.formatEther(fixedDepo);
             const varLimitForm = ethers.formatEther(varLimit);
             const varDepoForm = ethers.formatEther(varDepo);
+            const time = Number(BigInt("31536000")/duration); // 105120
+            const APY = Number(1+varLimitForm/fixedLimitForm); // 1.5
+            const value = ((APY ** time) - 1)*100;
 
-            return [addre, (varLimitForm*100/fixedLimitForm)+"%", fixedDepoForm, fixedLimitForm, varDepoForm, varLimitForm, Number(payouts), (Number(duration)/60/60/24), "15"]
+            return [addre, value.toFixed(2)+"%", fixedDepoForm, fixedLimitForm, varDepoForm, varLimitForm, Number(payouts), duration, "15"]
         }
 
         return null;
@@ -110,76 +122,161 @@ const Portfolio = () => {
             args: [],
             });
 
-        const exp = Number(startDate)+Number(pool_info[6])*24*60*60;
+        const exp = Number(startDate+pool_info[7]);
+        
         var seconds = new Date().getTime() / 1000;
-        // console.log("str:"+Number(startDate))
-        // console.log("exp:"+exp)
+        
+        function formatTime(date) {
+            const months = [
+              'Jan', 'Feb', 'Mar', 'Apr',
+              'May', 'Jun', 'Jul', 'Aug',
+              'Sep', 'Oct', 'Nov', 'Dec'
+            ];
+          
+            const month = months[date.getMonth()];
+            const day = date.getDate();
+            const year = date.getFullYear();
+            const hours = date.getHours();
+            const minutes = date.getMinutes();
+          
+            // Ensure that single-digit day and month are formatted with leading zeros
+            const formattedDay = day < 10 ? `0${day}` : day;
+            const formattedHours = hours < 10 ? `0${hours}` : hours;
+            const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+          
+            return `${month} ${formattedDay} ${year} ${formattedHours}:${formattedMinutes}`;
+          }
+        
+        let sdate = new Date(Number(startDate) * 1000);
+        let sformattedDate = formatTime(sdate);
 
         let exdate = new Date(exp * 1000);
-        let edday = exdate.getUTCDate().toString().padStart(2, '0');  // padStart ensures it's always 2 digits
-        let edmonth = (exdate.getUTCMonth() + 1).toString().padStart(2, '0');  // +1 because months are 0-indexed
-        let edyear = exdate.getUTCFullYear();
-        let edformattedDate = `${edmonth}-${edday}-${edyear}`;
+        let edformattedDate = formatTime(exdate);
+        // console.log(fixed, Number(fixed[2]))
+        // console.log(pool_info, Number(pool_info[6]))
+        // console.log(seconds)
 
-        let sdate = new Date(Number(startDate) * 1000);
-        let sday = sdate.getUTCDate().toString().padStart(2, '0');  // padStart ensures it's always 2 digits
-        let smonth = (sdate.getUTCMonth() + 1).toString().padStart(2, '0');  // +1 because months are 0-indexed
-        let syear = sdate.getUTCFullYear();
-        let sformattedDate = `${smonth}-${sday}-${syear}`;
-
-        return [pool, (startDate == 0) ? "Unfilled" : ((exp > seconds) ? "Active" : "Expired"), fixed[4] ? "Fixed" : "Variable", pool_info[1], ethers.formatEther(fixed[0]) + " Dai", (Number(fixed[2])*ethers.formatEther(fixed[0])*pool_info[5]/pool_info[3])+" Dai", Number(fixed[2]), Number(pool_info[6]), sformattedDate, edformattedDate, pool_info, i]
+        let pos_data = [pool, 
+            (startDate == 0) ? "Unfilled" : ((exp > seconds) ? "Active" : "Settled"),
+             fixed[4] ? "Fixed" : "Variable",
+              pool_info[1],
+              ethers.formatEther(fixed[0]) + " Dai",
+               (Number(fixed[2])*ethers.formatEther(fixed[0])*pool_info[5]/pool_info[3]).toFixed(3)+" Dai",
+                Number(fixed[2]),
+                 Number(pool_info[6]),
+                  sformattedDate,
+                   edformattedDate,
+                    pool_info,
+                     i,
+                     fixed[3]];
+        // console.log(i, pos_data);
+        return pos_data;
 
         
     };
-    useEffect(() => {
-        const getListOfPositions = async () => {
-            const positionCount = await publicClient.readContract({
+    const getListOfPositions = async () => {
+        let poss = [];
+        if(address !== undefined && address !== "" ){
+            const myPositions = await publicClient.readContract({
                 address: lilaposaddr,
                 abi: LilaPosition.abi,
-                functionName: "totalSupply",
-                args: [],
+                functionName: "getUserNFTs",
+                args: [address],
                 });
-            
-            let poss = [];
-            for(let i = 0; i < positionCount; i++){
-                let po = await getPosition(i);
-                if(po != [] && po!=""){
-                    poss.push(po);
+
+                for(let j = 33; j < myPositions.length; j++){
+                    let po = await getPosition(Number(myPositions[j]));
+                    if(po != [] && po!=""){
+                        poss.push(po);
+                    }
                 }
+
+        }
+
+        setPositionss(poss);
+        const stringifiedPositions = JSON.stringify(poss, (key, value) => {
+            if (typeof value === 'bigint') {
+              return value.toString();
             }
-            setPositionss(poss);
-            localStorage.setItem('positions', JSON.stringify(poss));
-            // console.log(poss);
-          };
-    
-          getListOfPositions();
+            return value;
+          });
+          
+        localStorage.setItem('positions', stringifiedPositions);
+        
+      };
+      useEffect(() => {
+        getListOfPositions();
+        
+        const interval = setInterval(getListOfPositions, 1200000);
+        
+        return () => clearInterval(interval);
       }, []);
     const {
-    data: dataAllow,
-    isLoading: isLoadingAllow,
-    isSuccess: isSuccessAllow,
-    write: withdraw,
+        data: dataAllow,
+        isLoading: isLoadingAllow,
+        isSuccess: isSuccessAllow,
+        write: withdraw,
     } = useContractWrite({
-        address: positions[selected_position] ? positions[selected_position][0] : "0",
+        address: getCorrectPosition(selected_position) ? getCorrectPosition(selected_position)[0] : "0",
         abi: LilaPool.abi,
         functionName: "withdraw",
-        args: [positions[selected_position] ? positions[selected_position][11] : 0],
+        args: [getCorrectPosition(selected_position) ? getCorrectPosition(selected_position)[11] : 0],
     });
+
+    const UpdatePositions = async (tokenID) => {
+        let po = await getPosition(tokenID);
+        if(po != [] && po!=""){
+            setPositionss(prevPositions => {
+                // Make a copy of the array
+                const updatedPositions = [...prevPositions];
+                
+                for(let i = 0; i < prevPositions.length; i++){
+                    if(positions[i][11] == tokenID){
+                        updatedPositions[i] = po;
+                    }
+                }
+        
+                return updatedPositions;
+            });
+        }
+    }
+
+    const setselected_positionbuffer = (index) => {
+        setselected_position(index);
+    }
+
+    useContractEvent({
+        address: positions ? (getCorrectPosition(selected_position) ? getCorrectPosition(selected_position)[0] : "0") : "0",
+        abi: LilaPool.abi,
+        eventName: 'Withdrawal',
+        listener(log) {
+            console.log(log);
+            console.log(Number(log[0].args['tokenID']) );
+            console.log(Number(getCorrectPosition(selected_position)[11]));
+            if(Number(log[0].args['tokenID']) === Number(getCorrectPosition(selected_position)[11])){
+
+                setSuccessWith(true);
+                UpdatePositions(log[0].args['tokenID']);
+
+            //     setSupplyingBool(false);
+            //     setSupplyBool(true);
+            //     setSuccessDepo(true);
+            //     setText("");
+            }
+        },
+    });
+
 
   return (
     <div>
       <div className="container mx-auto w-11/12 md:w-[85%] 3xl:w-[70%]">
-        <Navbar />
-        {/* <Filter 
-            buttons={pool_buttons}
-            currentTab={currentFilter}
-            setCurrentTab={printFilter}
-            key="tab-content-buttons"
-        /> */}
+        <Navbar homepage={false} />
 
         {/* Cards */}
             {positions && positions.length > 0 ? (
-                    <PortfolioSingleAsset positions={positions} selected_position={selected_position} setselected_position={setselected_position} withdraw={withdraw}/>
+                    <PortfolioSingleAsset positions={positions} selected_position={selected_position} setselected_position={setselected_positionbuffer} withdraw={withdraw} 
+                    successWith={successWith} setSuccessWith={setSuccessWith}
+                    getCorrectPosition={getCorrectPosition}/>
             ) : (
                 <NoPoolsScreen></NoPoolsScreen>
             )}
