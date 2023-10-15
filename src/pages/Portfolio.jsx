@@ -184,7 +184,7 @@ const Portfolio = () => {
                 args: [address],
                 });
 
-                for(let j = 33; j < myPositions.length; j++){
+                for(let j = 0; j < myPositions.length; j++){
                     let po = await getPosition(Number(myPositions[j]));
                     if(po != [] && po!=""){
                         poss.push(po);
