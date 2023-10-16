@@ -3,9 +3,28 @@ import LineBreak from "./LineBreak";
 import { motion } from "framer-motion";
 import addresj from '../../addresses/addresj.json';
 import { useState } from "react";
+import {useContractEvent } from "wagmi";
+import ILilaPool from "../../abi/ILilaPool.json"
 
-const PortfolioFixedPositionPopup = ({ close, position, withdraw, successWith, setSuccessWith }) => {
+const PortfolioFixedPositionPopup = ({ close, position, withdraw, UpdatePositions}) => {
+    const [successWith, setSuccessWith] = useState(false);
 
+    useContractEvent({
+        address: position[0],
+        abi: ILilaPool.abi,
+        eventName: 'Withdrawal',
+        listener(log) {
+            console.log(log);
+            console.log(Number(log[0].args['tokenID']) );
+            console.log(Number(position[11]));
+            if(Number(log[0].args['tokenID']) === Number(position[11])){
+                setSuccessWith(true);
+                UpdatePositions(log[0].args['tokenID']);
+            }
+        },
+    });
+
+  
   const [claiming, setClaiming] = useState(false);
   const [claimingPrinc, setClaimingPrinc] = useState(false);
   // earn fixed popup details data
@@ -36,7 +55,7 @@ const PortfolioFixedPositionPopup = ({ close, position, withdraw, successWith, s
       content: position[3],
     },
   ];
-
+//   console.log(position);
   // swap nft details
   const swapNFTDetails = [
     {
@@ -114,7 +133,6 @@ const PortfolioFixedPositionPopup = ({ close, position, withdraw, successWith, s
     setClaimingPrinc(false);
     close();
   }
-  console.log("S"+successWith+" P"+ claimingPrinc+" C"+ claiming)
 
   return (
     <motion.div

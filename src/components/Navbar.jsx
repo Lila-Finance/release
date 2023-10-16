@@ -42,9 +42,11 @@ const Navbar = ({ homepage }) => {
       >
         {homepage === false ? (
             <NavLink to="/">
-            <h1 className="text-2xl md:text-[35px] lg:text-[40px]">
+            {/* <h1 className="text-2xl md:text-[35px] lg:text-[40px]">
                 Lila Finance
-            </h1>
+            </h1> */}
+            <img src="./images/lilabwlogo.png" alt="Lila Logo" className="sm:w-[350px] sm:h-[100px]" />
+            {/* src="./images/lilabwlogo.png" */}
             </NavLink>
         ) : (<div></div>)}
 
@@ -81,6 +83,10 @@ const Navbar = ({ homepage }) => {
 
             <NavLink to="/portfolio">
               <p className="text-lg lg:text-xl">Portfolio</p>
+            </NavLink>
+
+            <NavLink to="/faucet">
+              <p className="text-lg lg:text-xl">Faucet</p>
             </NavLink>
 
             {/* dropdown */}

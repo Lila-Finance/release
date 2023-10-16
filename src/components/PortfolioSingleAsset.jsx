@@ -3,7 +3,7 @@ import BlackOverlay from "./popups/BlackOverlay";
 import PortfolioFixedPositionPopup from "./popups/PortfolioFixedPositionPopup";
 import { AnimatePresence } from "framer-motion";
 
-const PortfolioSingleAsset = ({positions, selected_position, setselected_position, withdraw, successWith, setSuccessWith, getCorrectPosition}) => {
+const PortfolioSingleAsset = ({positions, selected_position, setselected_position, withdraw, UpdatePositions, getCorrectPosition}) => {
   // first table data
   const firstTableHeading = [
     {
@@ -57,7 +57,6 @@ const PortfolioSingleAsset = ({positions, selected_position, setselected_positio
 
   const closePositionPopup = () => {
     setShowFixedPositionPopup(false);
-    setSuccessWith(false);
   };
 
   return (
@@ -124,7 +123,7 @@ const PortfolioSingleAsset = ({positions, selected_position, setselected_positio
         {showFixedPositionPopup === true ? (
           <>
             <BlackOverlay close={closePositionPopup} />
-            <PortfolioFixedPositionPopup close={closePositionPopup} position={getCorrectPosition(selected_position)} withdraw={withdraw} successWith={successWith} setSuccessWith={setSuccessWith}/>
+            <PortfolioFixedPositionPopup close={closePositionPopup} position={getCorrectPosition(selected_position)} withdraw={withdraw} UpdatePositions={UpdatePositions}/>
           </>
         ) : null}
       </AnimatePresence>

@@ -11,7 +11,7 @@ import {
 import { parseEther, formatEther, formatUnits } from "viem";
 import IERC20 from "../abi/IERC20.json";
 import { parse } from "postcss";
-import LilaPool from "../abi/LilaPool.json";
+import ILilaPool from "../abi/ILilaPool.json";
 import {ethers} from "ethers";
 
 
@@ -187,9 +187,9 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
   const [balance, setBalance ] = useState("0");
 
   const setCorrectInput = (val) => {
+    setText(val);
     let v = parseFloat(val);
     if(!isNaN(v) && isFinite(v)){
-
         let max = 0;
 
         if(fixedAmount){
@@ -200,9 +200,11 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
         }
 
         setInput(Math.min(v, max).toString());
-        setText(Math.min(v, max).toString());
-    }else if(val == ""){
-        setText("");
+        if(Math.min(v, max).toString() == v){
+            setText(val);
+        }else{
+            setText(max);
+        }
     }
   }
 
@@ -261,7 +263,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
   
     useContractEvent({
         address: pool[0],
-        abi: LilaPool.abi,
+        abi: ILilaPool.abi,
         eventName: 'Deposit',
         listener(log) {
             if(log[0].args['poolAddr'] == pool[0] && log[0].args['who'] == walletAddress){
@@ -280,7 +282,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
         isLoading: isLoadingDeposit
   } = useContractWrite({
         address: pool[0],
-        abi: LilaPool.abi,
+        abi: ILilaPool.abi,
         functionName: "deposit",
         args: [ethers.parseEther(input), false],
       });
@@ -291,12 +293,13 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
         isSuccess: isSuccessFixed,
   } = useContractWrite({
         address: pool[0],
-        abi: LilaPool.abi,
+        abi: ILilaPool.abi,
         functionName: "deposit",
         args: [ethers.parseEther(input), true],
   });
 
   const supply = async () => {
+    setText(input);
     if(text == "" || input == "0" || input == "0.0"){
         return;
     }

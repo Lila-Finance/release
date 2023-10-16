@@ -1,8 +1,9 @@
 import Card from "../components/Card";
 import Navbar from "../components/Navbar";
 import addresj from "../addresses/addresj.json";
-import LilaAddressProvider from "../abi/LilaPoolAddressProvider.json";
-import LilaPool from "../abi/LilaPool.json";
+import ILilaPoolAddressProvider from "../abi/ILilaPoolAddressProvider.json";
+import IProxy from "../abi/IProxy.json";
+import ILilaPool from "../abi/ILilaPool.json";
 import { useContractRead } from "wagmi";
 import { useState, useEffect } from "react";
 import { useAccount, usePublicClient, useContractWrite, useContractEvent } from "wagmi";
@@ -23,42 +24,43 @@ const Market = () => {
     });
     const [successDepo, setSuccessDepo] = useState(false);
     const [successAmount, setSuccessAmount] = useState("0");
+    const [tvl, setTVL] = useState("0");
     const getPoolInfo = async (addre) => {
 
         if (publicClient) {
             const fixedLimit = await publicClient.readContract({
                 address: addre,
-                abi: LilaPool.abi,
+                abi: ILilaPool.abi,
                 functionName: "fixedLimit",
                 args: [],
             });
             const fixedDepo = await publicClient.readContract({
                 address: addre,
-                abi: LilaPool.abi,
+                abi: ILilaPool.abi,
                 functionName: "totalFixedDeposits",
                 args: [],
             });
             const varLimit = await publicClient.readContract({
                 address: addre,
-                abi: LilaPool.abi,
+                abi: ILilaPool.abi,
                 functionName: "variableLimit",
                 args: [],
             });
             const varDepo = await publicClient.readContract({
                 address: addre,
-                abi: LilaPool.abi,
+                abi: ILilaPool.abi,
                 functionName: "totalVariableDeposits",
                 args: [],
             });
             const payouts = await publicClient.readContract({
                 address: addre,
-                abi: LilaPool.abi,
+                abi: ILilaPool.abi,
                 functionName: "payoutCount",
                 args: [],
             });
             const duration = await publicClient.readContract({
                 address: addre,
-                abi: LilaPool.abi,
+                abi: ILilaPool.abi,
                 functionName: "timeLength",
                 args: [],
             });
@@ -89,32 +91,57 @@ const Market = () => {
     
         return ethers.formatEther(0);
       };
-      const getListOfPools = async () => {
-        const poolsCount = await publicClient.readContract({
-            address: addrprov,
-            abi: LilaAddressProvider.abi,
-            functionName: "openPoolsLength",
+    const updateTVL = async () => {
+        const aToken = await publicClient.readContract({
+            address: addresj.proxy,
+            abi: IProxy.abi,
+            functionName: "aToken",
             args: [],
             });
-
-            // console.log(poolsCount);
-            let final_pools = [];
-        for(let i = 0; i < poolsCount; i++){
-            const ithpools = await publicClient.readContract({
-                address: addrprov,
-                abi: LilaAddressProvider.abi,
-                functionName: "openPools",
-                args: [i],
-                });
-            
-            // console.log(ithpools);
-            const pool = await getPoolInfo(ithpools);
-            final_pools.push(pool)
-            
+            // console.log("Atoken "+aToken);
+        const aTokenBal = await publicClient.readContract({
+            address: aToken,
+            abi: IERC20.abi,
+            functionName: "balanceOf",
+            args: [addresj.proxy],
+            });
+        
+        function formatMoney(number) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2
+            }).format(number);
         }
-        setPools(final_pools);
-        localStorage.setItem('pools', JSON.stringify(final_pools));
-      };
+
+        setTVL(formatMoney(Number(ethers.formatEther(aTokenBal))));
+    }
+    const getListOfPools = async () => {
+    const poolsCount = await publicClient.readContract({
+        address: addrprov,
+        abi: ILilaPoolAddressProvider.abi,
+        functionName: "openPoolsLength",
+        args: [],
+        });
+
+        // console.log(poolsCount);
+        let final_pools = [];
+    for(let i = 0; i < poolsCount; i++){
+        const ithpools = await publicClient.readContract({
+            address: addrprov,
+            abi: ILilaPoolAddressProvider.abi,
+            functionName: "openPools",
+            args: [i],
+            });
+        
+        // console.log(ithpools);
+        const pool = await getPoolInfo(ithpools);
+        final_pools.push(pool)
+        updateTVL();
+    }
+    setPools(final_pools);
+    localStorage.setItem('pools', JSON.stringify(final_pools));
+    };
 
       useEffect(() => {
         getListOfPools();
@@ -140,7 +167,7 @@ const Market = () => {
                 Single Asset Protocols
             </h1>
             <h1 className="text-3xl lg:text-4xl 2xl:text-5xl mt-4 pr-10">
-                $15,283 TVL
+                {tvl} TVL
             </h1>
         </div>
         {/* Cards */}

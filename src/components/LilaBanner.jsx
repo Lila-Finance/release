@@ -7,7 +7,7 @@ const LilaBanner = () => {
       {/* Logo */}
       <div className="mt-24 flex items-center justify-center">
         <img
-          src="./images/logo.svg"
+          src="./images/alogo.svg"
           alt="site_logo"
           className="mix-blend-color-burn"
         />
@@ -15,8 +15,8 @@ const LilaBanner = () => {
 
       {/* Subheading and button */}
       <div className="text-center mt-4 mb-20 lg:mb-40">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl 2xl:text-7xl text-black font-medium">
-          Rate Swaps
+        <h1 className="text-3xl md:text-4xl lg:text-5xl 2xl:text-6xl text-black font-medium">
+          Fixed Rate Swaps
         </h1>
 
         {/* button */}

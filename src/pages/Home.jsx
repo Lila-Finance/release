@@ -9,11 +9,10 @@ const Home = () => {
     <div>
         <div className="pb-10 min-h-screen relative" id="lilabanner">
             <div className="container mx-auto w-11/12 lg:w-[85%] 3xl:w-[70%]">
-            <Navbar homepage={true} />
-                <LilaBanner />
+                <Navbar homepage={true} />
+                    <LilaBanner />
+                </div>
             </div>
-
-        </div>
         <SponsorsBanner></SponsorsBanner>
         <div className="pb-10">
             <div className="container mx-auto w-11/12 md:w-[85%] 3xl:w-[70%]">

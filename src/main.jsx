@@ -8,6 +8,7 @@ import { HashRouter, Route, Routes } from 'react-router-dom';
 import Market from "./pages/Market.jsx";
 import Home from "./pages/Home.jsx";
 import Portfolio from "./pages/Portfolio.jsx";
+import Faucet from "./pages/Faucet.jsx";
 import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
@@ -67,6 +68,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 <Route index element={<Home />} />
                 <Route path="market" element={<Market />} />
                 <Route path="portfolio" element={<Portfolio />} />
+                <Route path="faucet" element={<Faucet />} />
               </Route>
             </Routes>
           </HashRouter>

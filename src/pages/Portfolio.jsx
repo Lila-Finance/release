@@ -3,11 +3,11 @@ import Navbar from "../components/Navbar";
 import Filter from "../components/Filter";
 import NoPoolsScreen from "../components/NoPoolsScreen";
 import addresj from '../addresses/addresj.json';
-import LilaPool from "../abi/LilaPool.json";
-import LilaPosition from "../abi/LilaPosition.json";
-import LilaAddressProvider from "../abi/LilaPoolAddressProvider.json";
-import { useAccount, usePublicClient, useContractWrite, useContractEvent } from "wagmi";
-import { ethers } from "ethers";
+import ILilaPool from "../abi/ILilaPool.json";
+import ILilaPosition from "../abi/ILilaPosition.json";
+import ILilaPoolAddressProvider from "../abi/ILilaPoolAddressProvider.json";
+import { useAccount, usePublicClient, useContractWrite } from "wagmi";
+import { ethers, getIndexedAccountPath } from "ethers";
 import { useEffect, useState } from "react";
 import PortfolioSingleAsset from '../components/PortfolioSingleAsset';
 
@@ -30,7 +30,6 @@ const Portfolio = () => {
     } 
 
     const [selected_position, setselected_position] = useState(0);
-    const [successWith, setSuccessWith] = useState(false);
 
     const publicClient = usePublicClient();
     const { address } = useAccount();
@@ -39,37 +38,37 @@ const Portfolio = () => {
         if (publicClient) {
             const fixedLimit = await publicClient.readContract({
                 address: addre,
-                abi: LilaPool.abi,
+                abi: ILilaPool.abi,
                 functionName: "fixedLimit",
                 args: [],
             });
             const fixedDepo = await publicClient.readContract({
                 address: addre,
-                abi: LilaPool.abi,
+                abi: ILilaPool.abi,
                 functionName: "totalFixedDeposits",
                 args: [],
             });
             const varLimit = await publicClient.readContract({
                 address: addre,
-                abi: LilaPool.abi,
+                abi: ILilaPool.abi,
                 functionName: "variableLimit",
                 args: [],
             });
             const varDepo = await publicClient.readContract({
                 address: addre,
-                abi: LilaPool.abi,
+                abi: ILilaPool.abi,
                 functionName: "totalVariableDeposits",
                 args: [],
             });
             const payouts = await publicClient.readContract({
                 address: addre,
-                abi: LilaPool.abi,
+                abi: ILilaPool.abi,
                 functionName: "payoutCount",
                 args: [],
             });
             const duration = await publicClient.readContract({
                 address: addre,
-                abi: LilaPool.abi,
+                abi: ILilaPool.abi,
                 functionName: "timeLength",
                 args: [],
             });
@@ -89,7 +88,7 @@ const Portfolio = () => {
     const getPosition = async (i) => {
         const owner = await publicClient.readContract({
             address: lilaposaddr,
-            abi: LilaPosition.abi,
+            abi: ILilaPosition.abi,
             functionName: "ownerOf",
             args: [i],
             });
@@ -101,14 +100,14 @@ const Portfolio = () => {
         }
         const pool = await publicClient.readContract({
             address: lilaposaddr,
-            abi: LilaPosition.abi,
+            abi: ILilaPosition.abi,
             functionName: "lilaPool",
             args: [i],
             });
         
         const fixed = await publicClient.readContract({
             address: pool,
-            abi: LilaPool.abi,
+            abi: ILilaPool.abi,
             functionName: "usersMap",
             args: [i],
             });
@@ -117,7 +116,7 @@ const Portfolio = () => {
             
         const startDate = await publicClient.readContract({
             address: pool,
-            abi: LilaPool.abi,
+            abi: ILilaPool.abi,
             functionName: "poolStartTime",
             args: [],
             });
@@ -155,6 +154,7 @@ const Portfolio = () => {
         // console.log(fixed, Number(fixed[2]))
         // console.log(pool_info, Number(pool_info[6]))
         // console.log(seconds)
+        //Dec 31 1969 19:00
 
         let pos_data = [pool, 
             (startDate == 0) ? "Unfilled" : ((exp > seconds) ? "Active" : "Settled"),
@@ -164,8 +164,8 @@ const Portfolio = () => {
                (Number(fixed[2])*ethers.formatEther(fixed[0])*pool_info[5]/pool_info[3]).toFixed(3)+" Dai",
                 Number(fixed[2]),
                  Number(pool_info[6]),
-                  sformattedDate,
-                   edformattedDate,
+                  sformattedDate == "Dec 31 1969 19:00" ? "Not Started" : sformattedDate,
+                  sformattedDate == "Dec 31 1969 19:00" ? "Not Started" : edformattedDate,
                     pool_info,
                      i,
                      fixed[3]];
@@ -179,7 +179,7 @@ const Portfolio = () => {
         if(address !== undefined && address !== "" ){
             const myPositions = await publicClient.readContract({
                 address: lilaposaddr,
-                abi: LilaPosition.abi,
+                abi: ILilaPosition.abi,
                 functionName: "getUserNFTs",
                 args: [address],
                 });
@@ -211,16 +211,19 @@ const Portfolio = () => {
         
         return () => clearInterval(interval);
       }, []);
-    const {
+      const getIndex = () => {
+        return selected_position;
+      }
+      const {
         data: dataAllow,
         isLoading: isLoadingAllow,
         isSuccess: isSuccessAllow,
         write: withdraw,
     } = useContractWrite({
-        address: getCorrectPosition(selected_position) ? getCorrectPosition(selected_position)[0] : "0",
-        abi: LilaPool.abi,
+        address: getCorrectPosition(getIndex()) ? getCorrectPosition(getIndex())[0] : "0",
+        abi: ILilaPool.abi,
         functionName: "withdraw",
-        args: [getCorrectPosition(selected_position) ? getCorrectPosition(selected_position)[11] : 0],
+        args: [getCorrectPosition(getIndex()) ? getCorrectPosition(getIndex())[11] : 0],
     });
 
     const UpdatePositions = async (tokenID) => {
@@ -243,28 +246,8 @@ const Portfolio = () => {
 
     const setselected_positionbuffer = (index) => {
         setselected_position(index);
+        getIndex();
     }
-
-    useContractEvent({
-        address: positions ? (getCorrectPosition(selected_position) ? getCorrectPosition(selected_position)[0] : "0") : "0",
-        abi: LilaPool.abi,
-        eventName: 'Withdrawal',
-        listener(log) {
-            console.log(log);
-            console.log(Number(log[0].args['tokenID']) );
-            console.log(Number(getCorrectPosition(selected_position)[11]));
-            if(Number(log[0].args['tokenID']) === Number(getCorrectPosition(selected_position)[11])){
-
-                setSuccessWith(true);
-                UpdatePositions(log[0].args['tokenID']);
-
-            //     setSupplyingBool(false);
-            //     setSupplyBool(true);
-            //     setSuccessDepo(true);
-            //     setText("");
-            }
-        },
-    });
 
 
   return (
@@ -275,8 +258,7 @@ const Portfolio = () => {
         {/* Cards */}
             {positions && positions.length > 0 ? (
                     <PortfolioSingleAsset positions={positions} selected_position={selected_position} setselected_position={setselected_positionbuffer} withdraw={withdraw} 
-                    successWith={successWith} setSuccessWith={setSuccessWith}
-                    getCorrectPosition={getCorrectPosition}/>
+                    getCorrectPosition={getCorrectPosition} UpdatePositions={UpdatePositions}/>
             ) : (
                 <NoPoolsScreen></NoPoolsScreen>
             )}
