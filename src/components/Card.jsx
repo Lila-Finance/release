@@ -356,6 +356,34 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
     const cachedPos = localStorage.getItem('storedVarRate');
     return cachedPos ? cachedPos : "0%";
 });
+const fetchRate = async () => {
+    // try {
+    //   const response = await fetch('https://lila-finance.github.io/rates/DAI.txt');
+    // //   console.log(response);
+    //   const text = await response.text();
+    //   console.log(text);
+    //   setVarRate(text);
+      
+    //   // Store in local storage
+    //   localStorage.setItem('storedVarRate', text);
+    // } catch (error) {
+    //   console.error('Error fetching data:', error);
+      
+    //   const storedData = localStorage.getItem('storedVarRate');
+    //   if (storedData) {
+    //     setVarRate(storedData);
+    //   }
+    // } 
+  };
+  useEffect(() => {
+    fetchRate();
+    
+    const interval = setInterval(fetchRate, 100000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+
   let var_limit = pool[5];
   let var_deposited = pool[4];
   
