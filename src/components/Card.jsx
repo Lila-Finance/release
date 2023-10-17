@@ -13,7 +13,39 @@ import IERC20 from "../abi/IERC20.json";
 import { parse } from "postcss";
 import ILilaPool from "../abi/ILilaPool.json";
 import {ethers} from "ethers";
+import { createClient, Provider, useQuery } from 'urql';
+import { cacheExchange, fetchExchange } from '@urql/core';
+import BigNumber from 'bignumber.js';
+import addresj from "../addresses/addresj.json";
 
+function USDCp() {
+    const [result] = useQuery({ query: `{ reserves { name liquidityRate } }` });
+    const { data, fetching, error } = result;
+  
+    const getRate = (rrate) =>{
+      const liquidityRate = new BigNumber(rrate);
+      const rate = liquidityRate.dividedBy(new BigNumber(10).pow(27)).dividedBy(31536000);
+      const base = rate.plus(1);
+      const result = (Math.exp(31536000 * Math.log(1 + rate.toNumber())) - 1)*100;
+  
+      return result.toFixed(3);
+  }
+  
+    if (fetching) return <p>Loading...</p>;
+    if (error) return <p>Error: {error.message}</p>;
+    const getUSDCRate = (reserves) =>{
+      // console.log(reserves);
+      for(let i = 0; i < reserves.length ; i++){
+          if(reserves[i]['name'] == "USD Coin (Arb1)"){
+              return getRate(reserves[i]['liquidityRate']);
+          }
+      }
+      return "";
+    }
+    return (
+      <p className="text-[15px]">{getUSDCRate(data.reserves)}%</p>
+    );  
+  }
 
 const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmount }) => {
     const data = undefined;
@@ -180,7 +212,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
   const [input, setInput] = useState("0");
   const [text, setText] = useState("");
 
-  const tokenAddress = "0xFF34B3d4Aee8ddCd6F9AFFFB6Fe49bD371b8a357";
+
   const [token, setToken] = useState("");
   const { address: walletAddress } = useAccount();
 
@@ -217,7 +249,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
         isSuccess: isSuccessAllow,
         write: allow,
   } = useContractWrite({
-        address: tokenAddress,
+        address: addresj.arb_usdc,
         abi: IERC20.abi,
         functionName: "approve",
         args: [pool[0], parseEther(input)],
@@ -229,7 +261,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
             const goat = async () => {
                 if (publicClient) {
                     const allowance = await publicClient.readContract({
-                        address: "0xFF34B3d4Aee8ddCd6F9AFFFB6Fe49bD371b8a357",
+                        address: addressj.arb_usdc,
                         abi: IERC20.abi,
                         functionName: "allowance",
                         args: [walletAddress, pool[0]],
@@ -305,7 +337,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
     }
     if (publicClient) {
       const allowance = await publicClient.readContract({
-        address: tokenAddress,
+        address: addresj.arb_usdc,
         abi: IERC20.abi,
         functionName: "allowance",
         args: [walletAddress, pool[0]],
@@ -352,36 +384,10 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
   let fixed_rate = pool[1];
   let fixed_limit = pool[3];
   let fixed_deposited = pool[2];
-  const [var_rate, setVarRate] = useState(() => {
-    const cachedPos = localStorage.getItem('storedVarRate');
-    return cachedPos ? cachedPos : "0%";
-});
-const fetchRate = async () => {
-    // try {
-    //   const response = await fetch('https://lila-finance.github.io/rates/DAI.txt');
-    // //   console.log(response);
-    //   const text = await response.text();
-    //   console.log(text);
-    //   setVarRate(text);
-      
-    //   // Store in local storage
-    //   localStorage.setItem('storedVarRate', text);
-    // } catch (error) {
-    //   console.error('Error fetching data:', error);
-      
-    //   const storedData = localStorage.getItem('storedVarRate');
-    //   if (storedData) {
-    //     setVarRate(storedData);
-    //   }
-    // } 
-  };
-  useEffect(() => {
-    fetchRate();
-    
-    const interval = setInterval(fetchRate, 100000);
-    
-    return () => clearInterval(interval);
-  }, []);
+  const client = createClient({
+    url: 'https://api.thegraph.com/subgraphs/name/aave/protocol-v3-arbitrum',
+    exchanges: [cacheExchange, fetchExchange],
+  });
 
 
   let var_limit = pool[5];
@@ -425,7 +431,7 @@ const fetchRate = async () => {
       {/* Title */}
       <div className="px-6 py-6 border-b border-b-themeColor text-center border-l-4 border-r-4 border-themeColor">
         <p className="text-base leading-none">         
-        DAI AAVE {pool[7]} Day
+        Arbitrum USDC.e AAVE {pool[7]} Day
         </p>
       </div>
       {/* Toggle Categories */}
@@ -485,7 +491,10 @@ const fetchRate = async () => {
 
             {/* right */}
             <div className="w-full text-end">
-              <p className="text-[15px]">{var_rate}</p>
+              
+                <Provider value={client}>
+                    <USDCp />
+                </Provider>
             </div>
           </div>
 

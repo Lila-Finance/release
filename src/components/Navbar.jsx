@@ -85,9 +85,9 @@ const Navbar = ({ homepage }) => {
               <p className="text-lg lg:text-xl">Portfolio</p>
             </NavLink>
 
-            <NavLink to="/faucet">
-              <p className="text-lg lg:text-xl">Faucet</p>
-            </NavLink>
+            <a href="https://staging.lila.finance" target="_blank" rel="noopener noreferrer">
+              <p className="text-lg lg:text-xl">Testnet</p>
+            </a>
 
             {/* dropdown */}
             <div className="relative">

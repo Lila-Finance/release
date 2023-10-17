@@ -16,7 +16,6 @@ import DepositSuccessPopup from "../components/popups/DepositSuccessPopup";
 const Market = () => {
     const { address } = useAccount();
     const publicClient = usePublicClient();
-    const addrprov = addresj.addrprov;
     const [pools, setPools] = useState(() => {
         // Try to load pools from local storage immediately
         const cachedPools = localStorage.getItem('pools');
@@ -81,7 +80,7 @@ const Market = () => {
         if (publicClient) {
             let walletAddress = address;
             const BALANCE = await publicClient.readContract({
-                address: "0xFF34B3d4Aee8ddCd6F9AFFFB6Fe49bD371b8a357",
+                address: addresj.arb_usdc,
                 abi: IERC20.abi,
                 functionName: "balanceOf",
                 args: [walletAddress],
@@ -93,7 +92,7 @@ const Market = () => {
       };
     const updateTVL = async () => {
         const aToken = await publicClient.readContract({
-            address: addresj.proxy,
+            address: addresj.arb_proxy,
             abi: IProxy.abi,
             functionName: "aToken",
             args: [],
@@ -103,7 +102,7 @@ const Market = () => {
             address: aToken,
             abi: IERC20.abi,
             functionName: "balanceOf",
-            args: [addresj.proxy],
+            args: [addresj.arb_proxy],
             });
         
         function formatMoney(number) {
@@ -118,7 +117,7 @@ const Market = () => {
     }
     const getListOfPools = async () => {
     const poolsCount = await publicClient.readContract({
-        address: addrprov,
+        address: addresj.arb_addrprov,
         abi: ILilaPoolAddressProvider.abi,
         functionName: "openPoolsLength",
         args: [],
@@ -128,7 +127,7 @@ const Market = () => {
         let final_pools = [];
     for(let i = 0; i < poolsCount; i++){
         const ithpools = await publicClient.readContract({
-            address: addrprov,
+            address: addresj.arb_addrprov,
             abi: ILilaPoolAddressProvider.abi,
             functionName: "openPools",
             args: [i],

@@ -330,8 +330,8 @@ const PortfolioFixedPositionPopup = ({ close, position, withdraw, UpdatePosition
           Lila Swap NFT
         </h3>
 
-        <a target="_blank" href={`https://sepolia.etherscan.io/nft/${addresj.lilaposaddr}/${position[11]}`}>
-            {addresj.lilaposaddr.slice(0, 10)}...
+        <a target="_blank" href={`https://sepolia.etherscan.io/nft/${addresj.arb_lilaposaddr}/${position[11]}`}>
+            {addresj.arb_lilaposaddr.slice(0, 10)}...
             <i class="fa fa-external-link" aria-hidden="true"></i>
         </a>
       </div>

@@ -21,28 +21,28 @@ const Banner = () => {
     const updateTVL = async () => {
         
         const newPC = await publicClient.readContract({
-            address: addresj.addrprov,
+            address: addresj.arb_addrprov,
             abi: ILilaPoolAddressProvider.abi,
             functionName: "totalAmountPayout",
             args: [],
             });
         
         const totalPoolsFilled = await publicClient.readContract({
-            address: addresj.addrprov,
+            address: addresj.arb_addrprov,
             abi: ILilaPoolAddressProvider.abi,
             functionName: "totalPoolsFilled",
             args: [],
             });
 
         const activePoolsFilled = await publicClient.readContract({
-            address: addresj.addrprov,
+            address: addresj.arb_addrprov,
             abi: ILilaPoolAddressProvider.abi,
             functionName: "totalActivePools",
             args: [],
             });
         
         const aToken = await publicClient.readContract({
-            address: addresj.proxy,
+            address: addresj.arb_proxy,
             abi: IProxy.abi,
             functionName: "aToken",
             args: [],
@@ -52,7 +52,7 @@ const Banner = () => {
             address: aToken,
             abi: IERC20.abi,
             functionName: "balanceOf",
-            args: [addresj.proxy],
+            args: [addresj.arb_proxy],
             });
         // console.log("AtokenBal "+aTokenBal);
 

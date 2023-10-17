@@ -13,8 +13,6 @@ import PortfolioSingleAsset from '../components/PortfolioSingleAsset';
 
 const Portfolio = () => {
   // get all pool addresses
-    const lilaposaddr = addresj.lilaposaddr;
-    const addrprov = addresj.addrprov;
     const [positions, setPositionss] = useState(() => {
         const cachedPos = localStorage.getItem('positions');
         return cachedPos ? JSON.parse(cachedPos) : [];
@@ -87,7 +85,7 @@ const Portfolio = () => {
     };
     const getPosition = async (i) => {
         const owner = await publicClient.readContract({
-            address: lilaposaddr,
+            address: addresj.arb_lilaposaddr,
             abi: ILilaPosition.abi,
             functionName: "ownerOf",
             args: [i],
@@ -99,7 +97,7 @@ const Portfolio = () => {
             return []
         }
         const pool = await publicClient.readContract({
-            address: lilaposaddr,
+            address: addresj.arb_lilaposaddr,
             abi: ILilaPosition.abi,
             functionName: "lilaPool",
             args: [i],
@@ -178,7 +176,7 @@ const Portfolio = () => {
         let poss = [];
         if(address !== undefined && address !== "" ){
             const myPositions = await publicClient.readContract({
-                address: lilaposaddr,
+                address: addresj.arb_lilaposaddr,
                 abi: ILilaPosition.abi,
                 functionName: "getUserNFTs",
                 args: [address],
