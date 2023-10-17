@@ -18,10 +18,10 @@ import { cacheExchange, fetchExchange } from '@urql/core';
 import BigNumber from 'bignumber.js';
 import addresj from "../addresses/addresj.json";
 
-function USDCp() {
+function DAIp() {
     const [result] = useQuery({ query: `{ reserves { name liquidityRate } }` });
     const { data, fetching, error } = result;
-  
+    
     const getRate = (rrate) =>{
       const liquidityRate = new BigNumber(rrate);
       const rate = liquidityRate.dividedBy(new BigNumber(10).pow(27)).dividedBy(31536000);
@@ -33,17 +33,18 @@ function USDCp() {
   
     if (fetching) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;
-    const getUSDCRate = (reserves) =>{
+    const getDAIRate = (reserves) =>{
       // console.log(reserves);
       for(let i = 0; i < reserves.length ; i++){
-          if(reserves[i]['name'] == "USD Coin (Arb1)"){
+        console.log(reserves[i]['name']);
+          if(reserves[i]['name'] == "Dai Stablecoin"){
               return getRate(reserves[i]['liquidityRate']);
           }
       }
       return "";
     }
     return (
-      <p className="text-[15px]">{getUSDCRate(data.reserves)}%</p>
+      <p className="text-[15px]">{getDAIRate(data.reserves)}%</p>
     );  
   }
 
@@ -230,9 +231,8 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
             let diff = Number(pool[5])-Number(pool[4]);
             max = Math.min(diff, Number(balance));
         }
-
-        setInput(Math.min(v, max).toString());
-        if(Math.min(v, max).toString() == v){
+        setInput(Math.min(v, max).toFixed(18));
+        if(Math.min(v, max).toFixed(18) == v){
             setText(val);
         }else{
             setText(max);
@@ -249,7 +249,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
         isSuccess: isSuccessAllow,
         write: allow,
   } = useContractWrite({
-        address: addresj.arb_usdc,
+        address: addresj.arb_DAI,
         abi: IERC20.abi,
         functionName: "approve",
         args: [pool[0], parseEther(input)],
@@ -261,7 +261,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
             const goat = async () => {
                 if (publicClient) {
                     const allowance = await publicClient.readContract({
-                        address: addressj.arb_usdc,
+                        address: addressj.arb_DAI,
                         abi: IERC20.abi,
                         functionName: "allowance",
                         args: [walletAddress, pool[0]],
@@ -337,7 +337,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
     }
     if (publicClient) {
       const allowance = await publicClient.readContract({
-        address: addresj.arb_usdc,
+        address: addresj.arb_DAI,
         abi: IERC20.abi,
         functionName: "allowance",
         args: [walletAddress, pool[0]],
@@ -431,7 +431,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
       {/* Title */}
       <div className="px-6 py-6 border-b border-b-themeColor text-center border-l-4 border-r-4 border-themeColor">
         <p className="text-base leading-none">         
-        Arbitrum USDC.e AAVE {pool[7]} Day
+        Arbitrum DAI AAVE {pool[7]} Day
         </p>
       </div>
       {/* Toggle Categories */}
@@ -493,7 +493,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
             <div className="w-full text-end">
               
                 <Provider value={client}>
-                    <USDCp />
+                    <DAIp />
                 </Provider>
             </div>
           </div>

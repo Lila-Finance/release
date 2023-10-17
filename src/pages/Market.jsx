@@ -80,7 +80,7 @@ const Market = () => {
         if (publicClient) {
             let walletAddress = address;
             const BALANCE = await publicClient.readContract({
-                address: addresj.arb_usdc,
+                address: addresj.arb_DAI,
                 abi: IERC20.abi,
                 functionName: "balanceOf",
                 args: [walletAddress],
