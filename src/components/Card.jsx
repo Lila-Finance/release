@@ -230,8 +230,8 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
             let diff = Number(pool[5])-Number(pool[4]);
             max = Math.min(diff, Number(balance));
         }
-        setInput(Math.min(v, max).toFixed(18));
-        if(Math.min(v, max).toFixed(18) == v){
+        setInput(Math.min(v, max).toString());
+        if(Math.min(v, max) == v){
             setText(val);
         }else{
             setText(max);
@@ -260,7 +260,7 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
             const goat = async () => {
                 if (publicClient) {
                     const allowance = await publicClient.readContract({
-                        address: addressj.arb_DAI,
+                        address: addresj.arb_DAI,
                         abi: IERC20.abi,
                         functionName: "allowance",
                         args: [walletAddress, pool[0]],
@@ -341,6 +341,8 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
         functionName: "allowance",
         args: [walletAddress, pool[0]],
       });
+      console.log("Allowance:"+allowance);
+      console.log("Asked:"+parseEther(input));
       if (allowance < parseEther(input)) {
         setSupplyBool(false);
         setAllowingBool(true);
