@@ -27,7 +27,7 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="font-bold text-xl">Social</div>
             <ul>
-              <li>LinkedIn</li>
+              <li><a href="https://www.linkedin.com/company/lila-fi/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
               <li><a href="https://twitter.com/LilaFinance" target="_blank" rel="noopener noreferrer">X [Twitter]</a></li>
             </ul>
           </div>
