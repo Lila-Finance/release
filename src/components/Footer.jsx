@@ -20,6 +20,7 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="font-bold text-xl">Resources</div>
             <ul>
+            <li><a href="https://github.com/Lila-Finance/" target="_blank" rel="noopener noreferrer">Github</a></li>
               <li>Terms of service</li>
               <li>Privacy Policy</li>
             </ul>
