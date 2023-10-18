@@ -341,8 +341,8 @@ const Card = ({ homepage, pool, getAddressBalance, setSuccessDepo, setSuccessAmo
         functionName: "allowance",
         args: [walletAddress, pool[0]],
       });
-      console.log("Allowance:"+allowance);
-      console.log("Asked:"+parseEther(input));
+    //   console.log("Allowance:"+allowance);
+    //   console.log("Asked:"+parseEther(input));
       if (allowance < parseEther(input)) {
         setSupplyBool(false);
         setAllowingBool(true);
