@@ -13,8 +13,8 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="font-bold text-xl">Product</div>
             <ul>
-              <li>Docs</li>
-              <li>Discord</li>
+                <li><a href="https://lila-finance.gitbook.io/lila-documentation/" target="_blank" rel="noopener noreferrer">Docs</a></li>
+                <li><a href="https://discord.gg/DBuG56VHfn" target="_blank" rel="noopener noreferrer">Discord</a></li>
             </ul>
           </div>
           <div className="space-y-4">
@@ -28,7 +28,7 @@ const Footer = () => {
             <div className="font-bold text-xl">Social</div>
             <ul>
               <li>LinkedIn</li>
-              <li>X [Twitter]</li>
+              <li><a href="https://twitter.com/LilaFinance" target="_blank" rel="noopener noreferrer">X [Twitter]</a></li>
             </ul>
           </div>
         </div>

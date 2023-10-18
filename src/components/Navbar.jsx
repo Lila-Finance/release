@@ -53,7 +53,7 @@ const Navbar = ({ homepage }) => {
         {/* social links for homepage */}
         {homepage === true && (
           <div className="flex items-center gap-6 mt-2">
-            <a href="https://discord.gg/y2xzVcSuCq" target="_blank">
+            <a href="https://discord.gg/DBuG56VHfn" target="_blank">
               <i className="fa-brands fa-discord text-lg md:text-[22px]"></i>
             </a>
 
@@ -104,7 +104,7 @@ const Navbar = ({ homepage }) => {
                   ref={ref2}
                 >
                   <div className="flex items-center flex-col gap-6 mt-2">
-                    <a href="https://discord.gg/y2xzVcSuCq" target="_blank">
+                    <a href="https://discord.gg/DBuG56VHfn" target="_blank">
                       <i className="fa-brands fa-discord text-lg md:text-[22px]"></i>
                     </a>
 
