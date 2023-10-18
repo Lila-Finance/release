@@ -36,7 +36,6 @@ function DAIp() {
     const getDAIRate = (reserves) =>{
       // console.log(reserves);
       for(let i = 0; i < reserves.length ; i++){
-        console.log(reserves[i]['name']);
           if(reserves[i]['name'] == "Dai Stablecoin"){
               return getRate(reserves[i]['liquidityRate']);
           }

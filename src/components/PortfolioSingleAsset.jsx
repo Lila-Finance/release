@@ -99,7 +99,7 @@ const PortfolioSingleAsset = ({positions, selected_position, setselected_positio
                     >
 
                     <td className="text-start py-3 pl-4">
-                        <a target="_blank" href={`https://sepolia.etherscan.io/address/${pool[0]}`}>
+                        <a target="_blank" href={`https://arbiscan.io/address/${pool[0]}`}>
                             {pool[0].slice(0, 10)}...
                             <i className="fa fa-external-link" aria-hidden="true"></i>
                         </a>
