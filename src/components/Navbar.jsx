@@ -89,43 +89,12 @@ const Navbar = ({ homepage }) => {
               <p className="text-lg lg:text-xl">Testnet</p>
             </a>
 
+            <a href="https://lila-finance.gitbook.io/lila-documentation/" target="_blank" rel="noopener noreferrer">
+              <p className="text-lg lg:text-xl">Docs</p>
+            </a>
+
             {/* dropdown */}
-            <div className="relative">
-              <i
-                className="fa-solid fa-ellipsis text-[26px] cursor-pointer"
-                onClick={() => setShowDropwdown(!showDropdown)}
-                ref={ref}
-              ></i>
-
-              {/* social icons */}
-              {showDropdown === true && (
-                <div
-                  className="w-max px-4 py-3  bg-themeColor rounded-md absolute -right-full top-full"
-                  ref={ref2}
-                >
-                  <div className="flex items-center flex-col gap-6 mt-2">
-                    <a href="https://discord.gg/DBuG56VHfn" target="_blank">
-                      <i className="fa-brands fa-discord text-lg md:text-[22px]"></i>
-                    </a>
-
-                    <a href="https://twitter.com/LilaFinance" target="_blank">
-                      <i className="fa-brands fa-twitter text-lg md:text-[22px]"></i>
-                    </a>
-
-                    <a
-                      href="https://lila-finance.gitbook.io/lila-documentation/"
-                      target="_blank"
-                    >
-                      <img
-                        src={gitbook}
-                        alt="gitbook_icon"
-                        className="w-[22px] md:w-full"
-                      />
-                    </a>
-                  </div>
-                </div>
-              )}
-            </div>
+            
           </div>
         )}
       </div>
