@@ -107,7 +107,7 @@ const PortfolioSingleAsset = ({positions, selected_position, setselected_positio
                     <td className="text-start py-3 pl-4">{pool[1]}</td>
                     <td className="text-center py-3 pl-4">{pool[2]}</td>
                     <td className="text-center py-3 pl-4">{pool[3]}</td>
-                    <td className="text-center py-3 pl-4">{pool[4]}</td>
+                    <td className="text-center py-3 pl-4">{(Number(pool[4]).toFixed(4)) + " Dai"}</td>
                     <td className="text-center py-3 pl-4">{pool[5]}</td>
                     <td className="text-center py-3 pl-4">{pool[6]+"/"+pool[7]}</td>
                     <td className="text-center py-3 pl-4">{pool[8]=="01-01-1970" ? "Not Started" : pool[8]}</td>

@@ -158,7 +158,7 @@ const Portfolio = () => {
             (startDate == 0) ? "Unfilled" : ((exp > seconds) ? "Active" : "Settled"),
              fixed[4] ? "Fixed" : "Variable",
               pool_info[1],
-              ethers.formatEther(fixed[0]) + " Dai",
+              ethers.formatEther(fixed[0]),
                (Number(fixed[2])*ethers.formatEther(fixed[0])*pool_info[5]/pool_info[3]).toFixed(3)+" Dai",
                 Number(fixed[2]),
                  Number(pool_info[6]),

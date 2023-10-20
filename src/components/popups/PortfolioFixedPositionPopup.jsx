@@ -96,12 +96,12 @@ const PortfolioFixedPositionPopup = ({ close, position, withdraw, UpdatePosition
     {
       id: 8,
       key: "My Fixed Deposit:",
-      content: (position[2] == "Fixed" ? position[4] : "0 Dai" ),
+      content: (position[2] == "Fixed" ? position[4] +" Dai" : "0" ),
     },
     {
       id: 9,
       key: "My Variable Deposit:",
-      content: (position[2] == "Variable" ? position[4] : "0 Dai"  ),
+      content: (position[2] == "Variable" ? position[4] +" Dai" : "0 Dai"  ),
     },
     // {
     //   id: 10,
