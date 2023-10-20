@@ -330,7 +330,7 @@ const PortfolioFixedPositionPopup = ({ close, position, withdraw, UpdatePosition
           Lila Swap NFT
         </h3>
 
-        <a target="_blank" href={`https://arbiscan.io/nft/${addresj.arb_lilaposaddr}/${position[11]}`}>
+        <a target="_blank" href={`https://arbiscan.io/token/${addresj.arb_lilaposaddr}?a=${position[11]}`}>
             {addresj.arb_lilaposaddr.slice(0, 10)}...
             <i class="fa fa-external-link" aria-hidden="true"></i>
         </a>
