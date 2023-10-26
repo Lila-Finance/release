@@ -125,7 +125,7 @@ const Market = () => {
 
         // console.log(poolsCount);
         let final_pools = [];
-    for(let i = 0; i < poolsCount; i++){
+    for(let i = 0; i < 3; i++){
         const ithpools = await publicClient.readContract({
             address: addresj.arb_addrprov,
             abi: ILilaPoolAddressProvider.abi,
