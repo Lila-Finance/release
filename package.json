@@ -12,7 +12,7 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
-  "dependencies": {
+  "dependencies": { 
     "@rainbow-me/rainbowkit": "^1.0.7",
     "autoprefixer": "^10.4.14",
     "bignumber.js": "^9.1.2",
