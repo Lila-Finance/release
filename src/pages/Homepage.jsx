@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-
+import Footer from "../components/Footer";
 
 
 const Homepage = () => {
@@ -33,13 +33,14 @@ const Homepage = () => {
             ></div>
           </Link> */}
           <p className="text-center text-2xl md:text-4xl text-white">
-                Coming Soon
+                Coming Friday November 24th
             </p>
         </div>
       </div>
 
       {/* second part
       {nextPage === true ? <Portfolio nextPageRef={nextPageRef} /> : null} */}
+      <Footer />
     </div>
   );
 };
