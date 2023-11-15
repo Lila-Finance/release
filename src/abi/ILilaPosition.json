@@ -137,6 +137,57 @@
     {
       "inputs": [
         {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getPool",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "contract IERC20",
+              "name": "asset",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "rate_time",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "duration_between_payments",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "payouts_plus_principal_payed_out",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deposit_amount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint32",
+              "name": "strategy",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct ILilaPoolsProvider.Pool",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "address",
           "name": "user",
           "type": "address"
@@ -180,37 +231,56 @@
     {
       "inputs": [
         {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "lilaPool",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "address",
           "name": "to",
           "type": "address"
         },
         {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
+          "components": [
+            {
+              "internalType": "contract IERC20",
+              "name": "asset",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "rate_time",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "duration_between_payments",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "payouts_plus_principal_payed_out",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deposit_amount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint32",
+              "name": "strategy",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct ILilaPoolsProvider.Pool",
+          "name": "data",
+          "type": "tuple"
         }
       ],
       "name": "mint",
-      "outputs": [],
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
       "stateMutability": "nonpayable",
       "type": "function"
     },
@@ -228,6 +298,35 @@
           "internalType": "address",
           "name": "owner",
           "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "salePrice",
+          "type": "uint256"
+        }
+      ],
+      "name": "royaltyInfo",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "royaltyAmount",
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -293,29 +392,11 @@
         },
         {
           "internalType": "bool",
-          "name": "approved",
+          "name": "_approved",
           "type": "bool"
         }
       ],
       "name": "setApprovalForAll",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "pool",
-          "type": "address"
-        }
-      ],
-      "name": "setLilaPoolValue",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -334,19 +415,6 @@
           "internalType": "bool",
           "name": "",
           "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "totalSupply",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
         }
       ],
       "stateMutability": "view",

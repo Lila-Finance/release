@@ -1,110 +1,43 @@
-import { NavLink } from "react-router-dom";
-import gitbook from "../assets/gitbook-icon.png";
-import { useState } from "react";
-import { useRef } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import  Overlay  from './Overlay';
 
-const Navbar = ({ homepage }) => {
-  // State for toggling the social icons dropdown
-  const [showDropdown, setShowDropwdown] = useState(false);
-
-  // References
-  const ref = useRef();
-  const ref2 = useRef();
-
-  // Close social dropdown when clicked outside
-  useEffect(() => {
-    const closePopup = (e) => {
-      if (
-        !ref &&
-        !ref.current &&
-        e != undefined &&
-        !ref.current.contains(e.target) &&
-        !ref2.current.contains(e.target)
-      ) {
-        setShowDropwdown(false);
-      }
-    };
-    document.addEventListener("click", closePopup);
-    return () => {
-      document.removeEventListener("click", closePopup);
-    };
-  }, [showDropdown]);
-
+const Navbar = ({setNetwork, showPopup}) => {
+    
+  
   return (
-    <div className="md:py-10 py-6 flex items-center justify-between md:flex-row flex-col gap-y-6">
-      {/* Left Side */}
-      <div
-        className={`flex items-center md:justify-start ${
-          homepage === true ? "justify-between" : "justify-center"
-        } md:flex-nowrap flex-wrap gap-y-4 gap-10`}
-      >
-        {homepage === false ? (
-            <NavLink to="/">
-            {/* <h1 className="text-2xl md:text-[35px] lg:text-[40px]">
-                Lila Finance
-            </h1> */}
-            <img src="./images/lilabwlogo.png" alt="Lila Logo" className="sm:w-[350px] sm:h-[100px]" />
-            {/* src="./images/lilabwlogo.png" */}
-            </NavLink>
-        ) : (<div></div>)}
+    // <div className={`mx-20 ${showPopup ? "fixed inset-0 bg-white bg-opacity-40" : ""}`}></div>
+    <div className=
+    {`bg-primaryBgDark sticky top-0 z-50 ${showPopup ? "fixed inset-0 bg-white bg-opacity-10" : ""}`}>
+        
+        {/* if showPopup is true then add the following css fixed inset-0 bg-white bg-opacity-40 */}
+        <div className="mx-20">
+    <nav className="flex items-center justify-between py-6 md:flex-row flex-col gap-y-8
+     w-11/12" 
+    >
+      {/* left side */}
+      <div className="flex items-center gap-8 md:gap-16 md:flex-row flex-col">
+        <Link to="/">
+          <img src="./images/logo-2.svg" alt="nav__logo" className="w-[16vw] h-[8vh]"/>
+        </Link>
 
-        {/* social links for homepage */}
-        {homepage === true && (
-          <div className="flex items-center gap-6 mt-2">
-            <a href="https://discord.gg/DBuG56VHfn" target="_blank">
-              <i className="fa-brands fa-discord text-lg md:text-[22px]"></i>
-            </a>
-
-            <a href="https://twitter.com/LilaFinance" target="_blank">
-              <i className="fa-brands fa-twitter text-lg md:text-[22px]"></i>
-            </a>
-
-            <a
-              href="https://lila-finance.gitbook.io/lila-documentation/"
-              target="_blank"
-            >
-              <img
-                src={gitbook}
-                alt="gitbook_icon"
-                className="w-[22px] md:w-full"
-              />
-            </a>
-          </div>
-        )}
-
-        {/* NavLinks */}
-        {!homepage && (
-          <div className="flex items-center gap-10 navlinks">
-            <NavLink to="/market">
-              <p className="text-lg lg:text-xl">Market</p>
-            </NavLink>
-
-            <NavLink to="/portfolio">
-              <p className="text-lg lg:text-xl">Portfolio</p>
-            </NavLink>
-
-            <a href="https://staging.lila.finance" target="_blank" rel="noopener noreferrer">
-              <p className="text-lg lg:text-xl">Testnet</p>
-            </a>
-
-            <a href="https://lila-finance.gitbook.io/lila-documentation/" target="_blank" rel="noopener noreferrer">
-              <p className="text-lg lg:text-xl">Docs</p>
-            </a>
-
-            {/* dropdown */}
-            
-          </div>
-        )}
+        {/* links */}
+        <ul className="flex items-center gap-10 lg:gap-20 text-sm md:text-base text-white">
+          <li>
+            <Link to={"/market"}>Market</Link>
+          </li>
+          <li>
+            <Link to={"/portfolio"}>Portfolio</Link>
+          </li>
+          <li>
+            <Link to={"/"}>Help</Link>
+          </li>
+        </ul>
       </div>
 
-      {/* Right side */}
+      {/* right side */}
       <div>
-        {/* <button className="bg-themeColor lg:text-lg md:py-[10px] py-2 px-8 md:px-12 rounded-full duration-300 hover:-translate-x-3">
-            {homepage === true ? "Enter App" : "Connect"}
-          </button>
-          <ConnectButton />; */}
         <ConnectButton.Custom>
           {({
             account,
@@ -122,7 +55,10 @@ const Navbar = ({ homepage }) => {
               chain &&
               (!authenticationStatus ||
                 authenticationStatus === "authenticated");
-
+                useEffect(() => {
+                    setNetwork(chain.name);
+                },[]);
+                
             return (
               <div
                 {...(!ready && {
@@ -140,7 +76,9 @@ const Navbar = ({ homepage }) => {
                       <button
                         onClick={openConnectModal}
                         type="button"
-                        className="bg-themeColor lg:text-lg md:py-[10px] py-2 px-8 md:px-12 rounded-full duration-300 hover:-translate-x-3"
+                        className="bg-primaryColor pt-[0.35vw] pb-[0.5vw] px-[2.25vw] 
+                      rounded-barRadius text-[1vw] flex items-center 
+                      justify-center hover:bg-primaryColorDark duration-200"
                       >
                         Connect Wallet
                       </button>
@@ -152,9 +90,11 @@ const Navbar = ({ homepage }) => {
                       <button
                         onClick={openChainModal}
                         type="button"
-                        className="bg-themeColor lg:text-lg md:py-[10px] py-2 px-8 md:px-12 rounded-full duration-300 hover:-translate-x-3"
+                        className="bg-primaryColor pt-[0.35vw] pb-[0.5vw] px-[2.25vw] 
+                      rounded-barRadius text-[1vw] flex items-center 
+                      justify-center hover:bg-primaryColorDark duration-200"
                       >
-                        Wrong network
+                        Wrong Network
                       </button>
                     );
                   }
@@ -165,37 +105,35 @@ const Navbar = ({ homepage }) => {
                         onClick={openChainModal}
                         style={{ display: "flex", alignItems: "center" }}
                         type="button"
-                        className="bg-themeColor lg:text-lg md:py-[10px] py-2 px-8 md:px-12 rounded-full duration-300 hover:-translate-x-3"
+                        className="w-[5vh] h-[5vh] rounded-lg flex items-center justify-center text-xl cursor-pointer"
                       >
                         {chain.hasIcon && (
                           <div
                             style={{
                               background: chain.iconBackground,
-                              width: 12,
-                              height: 12,
+                              width: 30,
+                              height: 30,
                               borderRadius: 999,
                               overflow: "hidden",
-                              marginRight: 4,
                             }}
                           >
                             {chain.iconUrl && (
                               <img
                                 alt={chain.name ?? "Chain icon"}
                                 src={chain.iconUrl}
-                                style={{ width: 12, height: 12 }}
+                                style={{ width: 30, height: 30 }}
                               />
                             )}
                           </div>
                         )}
-                        {chain.name}
                       </button>
 
                       <button
                         onClick={openAccountModal}
                         type="button"
-                        className="bg-themeColor lg:text-lg md:py-[10px] py-2 px-8 md:px-12 rounded-full duration-300 hover:-translate-x-3"
+                        className="w-[5vh] h-[5vh] rounded-lg flex items-center justify-center text-xl cursor-pointer"
                       >
-                        {account.displayName}
+                        <img src="./images/walletico.png" alt="nav__logo" className="w-[2.5vw] h-[4vh]"/>
                       </button>
                     </div>
                   );
@@ -204,7 +142,10 @@ const Navbar = ({ homepage }) => {
             );
           }}
         </ConnectButton.Custom>
+
       </div>
+    </nav>
+    </div>
     </div>
   );
 };

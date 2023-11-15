@@ -1,195 +1,311 @@
-import Card from "../components/Card";
+import { useState, useEffect } from 'react';
 import Navbar from "../components/Navbar";
-import addresj from "../addresses/addresj.json";
-import ILilaPoolAddressProvider from "../abi/ILilaPoolAddressProvider.json";
-import IProxy from "../abi/IProxy.json";
-import ILilaPool from "../abi/ILilaPool.json";
-import { useContractRead } from "wagmi";
-import { useState, useEffect } from "react";
-import { useAccount, usePublicClient, useContractWrite, useContractEvent } from "wagmi";
+import Popup from "../components/Popup";
+import Overlay from "../components/Overlay";
+import addresses from "../addresses/address.json";
+import mapping from "../localdata/mapping.json";
+
+import { useAccount, usePublicClient} from "wagmi";
 import { ethers } from "ethers";
+
 import IERC20 from "../abi/IERC20.json";
-import BlackOverlay from "../components/popups/BlackOverlay";
-import DepositSuccessPopup from "../components/popups/DepositSuccessPopup";
+import ILilaPoolsProvider from "../abi/ILilaPoolsProvider.json";
 
+const Market = ({ nextPageRef }) => {
+  const { address: userAddress } = useAccount();
+  const publicClient = usePublicClient();
 
-const Market = () => {
-    const { address } = useAccount();
-    const publicClient = usePublicClient();
-    const [pools, setPools] = useState(() => {
-        // Try to load pools from local storage immediately
-        const cachedPools = localStorage.getItem('pools');
-        return cachedPools ? JSON.parse(cachedPools) : [];
-    });
-    const [successDepo, setSuccessDepo] = useState(false);
-    const [successAmount, setSuccessAmount] = useState("0");
-    const [tvl, setTVL] = useState("0");
-    const getPoolInfo = async (addre) => {
-
-        if (publicClient) {
-            const fixedLimit = await publicClient.readContract({
-                address: addre,
-                abi: ILilaPool.abi,
-                functionName: "fixedLimit",
-                args: [],
-            });
-            const fixedDepo = await publicClient.readContract({
-                address: addre,
-                abi: ILilaPool.abi,
-                functionName: "totalFixedDeposits",
-                args: [],
-            });
-            const varLimit = await publicClient.readContract({
-                address: addre,
-                abi: ILilaPool.abi,
-                functionName: "variableLimit",
-                args: [],
-            });
-            const varDepo = await publicClient.readContract({
-                address: addre,
-                abi: ILilaPool.abi,
-                functionName: "totalVariableDeposits",
-                args: [],
-            });
-            const payouts = await publicClient.readContract({
-                address: addre,
-                abi: ILilaPool.abi,
-                functionName: "payoutCount",
-                args: [],
-            });
-            const duration = await publicClient.readContract({
-                address: addre,
-                abi: ILilaPool.abi,
-                functionName: "timeLength",
-                args: [],
-            });
-            const fixedLimitForm = ethers.formatEther(fixedLimit);
-            const fixedDepoForm = ethers.formatEther(fixedDepo);
-            const varLimitForm = ethers.formatEther(varLimit);
-            const varDepoForm = ethers.formatEther(varDepo);
-            const time = Number(BigInt("31536000")/duration); // 105120
-            const APY = Number(1+varLimitForm/fixedLimitForm); // 1.5
-            const value = ((APY ** time) - 1)*100;
-
-            return [addre, value.toFixed(2)+"%", fixedDepoForm, fixedLimitForm, varDepoForm, varLimitForm, Number(payouts), (Number(duration)/60/60/24), "15"]
-        }
-
-        return null;
-    };
-    const getAddressBalance = async () => {
-        if (publicClient) {
-            let walletAddress = address;
-            const BALANCE = await publicClient.readContract({
-                address: addresj.arb_DAI,
-                abi: IERC20.abi,
-                functionName: "balanceOf",
-                args: [walletAddress],
-            });
-            return ethers.formatEther(BALANCE);
-        }
-    
-        return ethers.formatEther(0);
-      };
-    const updateTVL = async () => {
-        const aToken = await publicClient.readContract({
-            address: addresj.arb_proxy,
-            abi: IProxy.abi,
-            functionName: "aToken",
-            args: [],
-            });
-            // console.log("Atoken "+aToken);
-        const aTokenBal = await publicClient.readContract({
-            address: aToken,
+  const getUserBalance = async (tokenAddress) => {
+    if (publicClient) {
+        const BALANCE = await publicClient.readContract({
+            address: tokenAddress,
             abi: IERC20.abi,
             functionName: "balanceOf",
-            args: [addresj.arb_proxy],
-            });
-        
-        function formatMoney(number) {
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-                minimumFractionDigits: 2
-            }).format(number);
-        }
-
-        setTVL(formatMoney(Number(ethers.formatEther(aTokenBal))));
-    }
-    const getListOfPools = async () => {
-    const poolsCount = await publicClient.readContract({
-        address: addresj.arb_addrprov,
-        abi: ILilaPoolAddressProvider.abi,
-        functionName: "openPoolsLength",
-        args: [],
+            args: [userAddress],
         });
-
-        // console.log(poolsCount);
-        let final_pools = [];
-    for(let i = 0; i < 3; i++){
-        const ithpools = await publicClient.readContract({
-            address: addresj.arb_addrprov,
-            abi: ILilaPoolAddressProvider.abi,
-            functionName: "openPools",
-            args: [i],
-            });
-        
-        // console.log(ithpools);
-        const pool = await getPoolInfo(ithpools);
-        final_pools.push(pool)
-        updateTVL();
+        return ethers.formatEther(BALANCE);
     }
-    setPools(final_pools);
-    localStorage.setItem('pools', JSON.stringify(final_pools));
-    };
 
-      useEffect(() => {
-        getListOfPools();
-        
-        const interval = setInterval(getListOfPools, 100000);
-        
-        return () => clearInterval(interval);
-      }, []);
+    return ethers.formatEther(0);
+  };
 
-      const clo = () => {
-        setSuccessDepo(false);
-        getListOfPools();
+  const maturityDuration = ["1", "3", "6"];
+const [activeMaturities, setActiveMaturities] = useState([0, 1, 2]);
+const toggleMaturity = (index) => {
+    if (activeMaturities.includes(index)) {
+      setActiveMaturities(activeMaturities.filter(item => item !== index));
+    } else {
+      setActiveMaturities([...activeMaturities, index]);
+    }
+  };
+
+
+
+  const assetData = ["All", "USDT", "DAI", "USDC"];
+  const [selectedAsset, setselectedAsset] = useState("All");
+
+  const [showDropdown, setShowDropdown] = useState(false);
+
+//   const pagination = ["1", "2", "3"];
+  const [pagination, setPagination] = useState(["1"]);
+  const [activePagination, setActivePagination] = useState(0);
+
+  // popup
+  const [showPopup, setShowPopup] = useState(false);
+
+  const openPopup = (id_shown) => {
+    setShowPopup(true);
+    setSelectedPool(id_shown);
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+  };
+  const [network, setNetwork] = useState("None");
+  const [messsage, setMessage] = useState("Choose a Valid Network/Connect Wallet");
+  const [pools, setPools] = useState([]);
+
+  const [shownPools, setShownPools] = useState([]);
+  
+
+useEffect(() => {
+    if(network != "None"){
+    setMessage(network +" Markets")
+    let map = mapping[network.toLowerCase()];
+    // console.log(map);
+    function convertMapToListOfLists(map) {
+        const listOfLists = [];
+        // Iterate through each top-level property (like "aave")
+        for (const [topLevelKey, assets] of Object.entries(map)) {
+          // Iterate through each asset (like "dai", "usdc", etc.)
+          for (const [assetKey, timeframes] of Object.entries(assets)) {
+            // Iterate through each timeframe (like "1m", "3m", "6m")
+            for (const [timeframe, value] of Object.entries(timeframes)) {
+              listOfLists.push([topLevelKey, assetKey, timeframe, value['index'], value['rate']]);
+            }
+          }
+        }
+      
+        return listOfLists;
       }
+      const list = convertMapToListOfLists(map);
+      setPools(list);
+    }
+  }, [network]);
+
+  useEffect(() => {
+    // console.log(pools);
+    
+    let activeMaturitiesDuration = activeMaturities.map(index => maturityDuration[index] + "m");
+    let filteredPools = pools.filter(pool => activeMaturitiesDuration.includes(pool[2]));
+
+    let asset = selectedAsset;  
+    let nfilteredPools = asset == "All" ? filteredPools : filteredPools.filter(pool => pool[1] === asset);
+
+    setShownPools(nfilteredPools.slice(0, 5));
+    
+    let page_count = Math.ceil(nfilteredPools.length / 5);
+    setPagination(Array.from({ length: page_count }, (_, index) => (index + 1).toString()));
+
+    }, [pools, selectedAsset, activeMaturities]);
+
+    useEffect(() => {
+        // console.log(pools);
+        
+        let activeMaturitiesDuration = activeMaturities.map(index => maturityDuration[index] + "m");
+        let filteredPools = pools.filter(pool => activeMaturitiesDuration.includes(pool[2]));
+
+        let asset = selectedAsset;  
+        let nfilteredPools = asset == "All" ? filteredPools : filteredPools.filter(pool => pool[1] === asset);
+        setShownPools(nfilteredPools.slice(5*activePagination, 5+5*activePagination));
+        }, [activePagination]);
+  
+    // useEffect(() => {
+    //     const new_pools = shownPools;
+    //     for(po in shownPools){
+
+    //     }
+    // }, [shownPools]);
+
+  const [selectedPool, setSelectedPool] = useState(0);
   return (
-    <div>
-      <div className="container mx-auto w-11/12 md:w-[85%] 3xl:w-[70%]">
-        <Navbar homepage={false}/>
-        {/* <a href="https://sepoliafaucet.com/" target="_blank">Sepolia ETH Faucet</a>
-        <br />
-        <a href="https://staging.aave.com/faucet/" target="_blank">Token Faucets</a> */}
-        <div className="flex items-center justify-between">
-            <h1 className="text-3xl lg:text-4xl 2xl:text-5xl mt-4">
-                Single Asset Protocols
-            </h1>
-            <h1 className="text-3xl lg:text-4xl 2xl:text-5xl mt-4 pr-10">
-                {tvl} TVL
-            </h1>
+    <div
+      ref={nextPageRef}
+      className="relative bg-primaryBg min-h-screen lg:pb-0 pb-20"
+    >
+        <Navbar setNetwork={setNetwork} showPopup={showPopup} />
+      <div className="container mx-auto w-11/12 min-h-screen">
+        <div className="mt-8">
+            <p className="text-center text-2xl md:text-4xl text-white font-bold">
+                {messsage}
+            </p>
         </div>
-        {/* Cards */}
-        <div className="mt-12 mb-[8vh] lg:mb-[16vh] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 2xl:gap-19.2">
-            {pools && pools.length > 0 ? (
-                pools.map((pool, index) => <Card homepage={false} 
-                key={index} pool={pool} 
-                getAddressBalance={getAddressBalance} 
-                setSuccessAmount={setSuccessAmount}
-                setSuccessDepo={setSuccessDepo}/>))
-             : (
-                <div className="text-center text-2xl font-bold">
-                    No Pools available
+        {/* content */}
+        <div className="w-full flex lg:flex-row gap-16 mt-16 mx-[3vw]">
+          {/* left side */}
+          <div className="w-full max-w-[15vw] flex flex-col items-center text-center ">
+            {/* Maturity (Months) */}
+            <div className="px-auto">
+              <p className="text-m font-bold text-white">Maturity (Months)</p>
+
+              {/* maturity btns */}
+              <div className="flex items-center gap-10 mt-4">
+                {maturityDuration?.map((item, idx) => (
+                <div
+                    key={idx}
+                    className={` ${
+                    activeMaturities.includes(idx) ? "bg-primaryColor" : ""
+                    } w-8 h-8 rounded-full flex items-center justify-center cursor-pointer`}
+                    onClick={() => toggleMaturity(idx)}>
+                    <p
+                    className={` ${
+                        activeMaturities.includes(idx) ? "text-primaryBg" : "text-white"
+                    } text-sm`}>
+                    {item}
+                    </p>
                 </div>
-            )}
+                ))}
+            </div>
+
+            </div>
+            <div className="mt-12 px-auto">
+              <p className="text-m font-bold text-white">Asset</p>
+
+              {/* dropdown */}
+              <div
+                onClick={() => setShowDropdown(!showDropdown)}
+                className={`bg-primaryColor border border-black w-32 ${
+                  showDropdown === true ? "h-[140px]" : "h-[40px]"
+                }  rounded-[20px] mt-3 relative py-2 overflow-hidden duration-300 cursor-pointer`}>
+                <p className="text-m text-primaryBg font-medium text-center">
+                  {selectedAsset}
+                </p>
+
+                <ul className="mt-2 border-t pt-1">
+                {assetData.map((item, idx) => {
+                    if (item === selectedAsset) return null;
+
+                    return (
+                    <p
+                        onClick={() => setselectedAsset(item)}
+                        key={idx}
+                        className="text-m text-primaryBg font-medium text-center cursor-pointer mb-1">
+                        {item}
+                    </p>
+                    );
+                })}
+                </ul>
+
+                {/* arrow */}
+                <div className="absolute right-2 top-[10px]">
+                  <img
+                    src="./images/dropdown-arrow.svg"
+                    alt=""
+                    className="cursor-pointer"/>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+          {/* right side */}
+          <div className="w-full max-w-[45vw]">
+            {/* header */}
+            <div className="w-full flex items-center justify-between pb-4 border-b-[4px] border-b-primaryColor">
+              <div className="w-4/12 flex items-center justify-start gap-2 px-5">
+                <p className="text-m text-white font-bold">Asset</p>
+                {/* <img src="./images/header-arrow.svg" alt="" /> */}
+              </div>
+
+              <div className="w-4/12 flex items-center justify-center gap-2">
+                <p className="text-m text-white font-bold">Protocol</p>
+                {/* <img src="./images/header-arrow.svg" alt="" /> */}
+              </div>
+
+              <div className="w-4/12 flex items-center justify-end gap-2 px-5">
+                <p className="text-m text-white font-bold">APY</p>
+                <img src="./images/header-arrow.svg" alt="" />
+              </div>
+
+              <div className="w-4/12 flex items-center justify-end gap-2 px-5">
+                <p className="text-m text-white font-bold">Maturity</p>
+                {/* <img src="./images/header-arrow.svg" alt="" /> */}
+              </div>
+
+              <div className="w-4/12 flex items-center justify-end gap-2 px-5">
+                <p className="text-m text-white font-bold">TVL</p>
+                <img src="./images/header-arrow.svg" alt="" />
+              </div>
+            </div>
+
+            {/* contetn */}
+            <div>
+              {shownPools?.map((item, idx) => {
+                const [ protocol, asset, duration, id, rate  ] = item;
+
+                return (
+                  <div
+                    onClick={() => openPopup(id)} 
+                    key={id}
+                    className={`w-full flex items-center justify-between py-5 mb-1 ${
+                      idx === shownPools.length - 1
+                        ? ""
+                        : "border-b border-b-primaryColor"
+                    }  cursor-pointer hover:shadow-rowShadow duration-200`}
+                  >
+                    <div className="w-4/12 flex items-center justify-start gap-2 px-5">
+                      <p className="text-sm text-white font-medium">{asset}</p>
+                    </div>
+
+                    <div className="w-4/12 flex items-center justify-center gap-2">
+                      <p className="text-sm text-white font-medium">{protocol}</p>
+                    </div>
+
+                    <div className="w-4/12 flex items-center justify-end gap-2 px-5">
+                      <p className="text-sm text-white font-medium">{rate}%</p>
+                    </div>
+
+                    <div className="w-4/12 flex items-center justify-end gap-2 px-5">
+                      <p className="text-sm text-white font-medium">{duration[0]} Month</p>
+                    </div>
+
+                    <div className="w-4/12 flex items-center justify-end gap-2 px-5">
+                      <p className="text-sm text-white font-medium">tvl</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* pagination */}
+            <div className="flex items-center justify-center gap-14 mt-5 md:mt-14 lg:mb-0 mb-10">
+              {pagination?.map((item, idx) => (
+                <div
+                  key={idx}
+                  className={` ${
+                    activePagination === idx ? "bg-primaryColor" : ""
+                  } w-8 h-8 rounded-full flex items-center justify-center cursor-pointer`}
+                  onClick={() => setActivePagination(idx)}
+                >
+                  <p
+                    className={` ${
+                      activePagination === idx ? "text-primaryBg" : "text-white"
+                    } font-medium text-sm`}
+                  >
+                    {item}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+          </div>
+
         </div>
-        {successDepo === true ? (
-            <>
-              <BlackOverlay clo={clo} />
-              <DepositSuccessPopup clo={clo} amount={successAmount}/>
-            </>
-          ) : null}
       </div>
+      <div className="w-full h-[55px] bg-primaryColor mt-10"></div>
+      <div className="w-full h-[55px]"></div>
+      {showPopup === true ? <Overlay closeFunc={closePopup} /> : null}
+            <Popup showPopup={showPopup} getBalance={getUserBalance} selectedPool={pools[selectedPool]}
+            userAddress={userAddress} publicClient={publicClient}/>
     </div>
   );
 };
