@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import Footer from "../components/Footer";
+
 
 
 const Homepage = () => {
@@ -26,21 +26,17 @@ const Homepage = () => {
       <div className="h-screen bg-primaryBg">
         <div className="container w-11/12 mx-auto h-full flex flex-col items-center justify-center gap-20">
           <img src="./images/logo.svg" alt="logo_svg" />
-          {/* <Link to={"/market"}>
+          <Link to={"/market"}>
             <div
                 className="w-[75px] h-[225px] bg-primaryColor shadow-barShadow rounded-barRadius cursor-pointer"
                 onClick={goToNextPage}
             ></div>
-          </Link> */}
-          <p className="text-center text-2xl md:text-4xl text-white">
-                Coming Friday November 24th
-            </p>
+          </Link>
         </div>
       </div>
 
       {/* second part
       {nextPage === true ? <Portfolio nextPageRef={nextPageRef} /> : null} */}
-      <Footer />
     </div>
   );
 };
