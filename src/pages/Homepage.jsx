@@ -26,12 +26,11 @@ const Homepage = () => {
       <div className="h-screen bg-primaryBg">
         <div className="container w-11/12 mx-auto h-full flex flex-col items-center justify-center gap-20">
           <img src="./images/logo.svg" alt="logo_svg" />
-          <Link to={"/market"}>
+          <a href="https://staging.lila.finance">
             <div
                 className="w-[75px] h-[225px] bg-primaryColor shadow-barShadow rounded-barRadius cursor-pointer"
-                onClick={goToNextPage}
             ></div>
-          </Link>
+          </a>
         </div>
       </div>
 
