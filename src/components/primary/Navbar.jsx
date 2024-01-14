@@ -1,24 +1,37 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const Navbar = ({ launchApp }) => {
+  const history = useNavigate();
+  const location = useLocation();
+
+  const handleNavLinkClick = (target) => {
+    // Check if the target is the current route
+    if (location.pathname === target) {
+      // Refresh the page
+      history.go(0);
+    }
+  };
+
+
   // links
   const navLinks = [
-    // {
-    //   id: 1,
-    //   title: "Market",
-    //   target: "/market",
-    // },
-    // {
-    //   id: 2,
-    //   title: "Portfolio",
-    //   target: "/portfolio",
-    // },
-    // {
-    //   id: 3,
-    //   title: "Docs",
-    //   target: "/docs",
-    // },
+    {
+      id: 1,
+      title: "Testnet Market",
+      target: "/market",
+    },
+    {
+      id: 2,
+      title: "Portfolio",
+      target: "/portfolio",
+    },
+    {
+      id: 3,
+      title: "Faucet",
+      target: "/faucet",
+    },
   ];
 
   const [walletConnected, setWalletConnected] = useState(false);
@@ -37,54 +50,30 @@ const Navbar = ({ launchApp }) => {
           {/* title */}
           <div className="md:block hidden">
             <div className="flex items-center gap-14">
-              {navLinks?.map((item) => (
+                            {navLinks?.map((item) => (
                 <NavLink
                   key={item.id}
                   to={item.target}
-                  className={
-                    "text-sm md:text-base xl:text-lg hover:translate-y-2 duration-300"
-                  }
+                  className="text-sm md:text-base xl:text-lg"
+                  onClick={() => handleNavLinkClick(item.target)}
                 >
                   {item.title}
                 </NavLink>
               ))}
+              <a
+                href={"https://lila-finance.gitbook.io/lila-documentation/getting-started-with-cryptocurrency/what-is-decentralized-finance"}
+                key={4}
+                target="_blank"
+                rel="noopener noreferrer" // important for security reasons when using target='_blank'
+                className="text-sm md:text-lg lg:text-xl"
+              >
+                {"Docs"}
+              </a>
             </div>
           </div>
         </div>
-
-        {/* right side */}
-        {walletConnected === false ? (
-          <div className="md:w-auto w-6/12 flex items-center justify-end">
-            {launchApp === true ? (
-              <div>
-                {/* <NavLink to="/market"> */}
-                  <button className="bg-navButtonBg py-2 md:py-3 px-4 md:px-8 text-sm md:text-base xl:text-lg rounded hover:-translate-x-2 duration-300">
-                    Coming Soon
-                  </button>
-                {/* </NavLink> */}
-              </div>
-            ) : (
-              <div onClick={() => setWalletConnected(true)}>
-                <button className="bg-navButtonBg py-2 md:py-3 px-4 md:px-8 text-sm md:text-base xl:text-lg rounded hover:-translate-x-2 duration-300">
-                  Connect
-                </button>
-              </div>
-            )}
-          </div>
-        ) : null}
-
-        {walletConnected === true ? (
-          <div className="flex items-center gap-[5px]">
-            <button className="bg-navButtonBg py-2 md:py-3 px-3 text-sm md:text-base xl:text-lg rounded">
-              Arbitrum
-            </button>
-            <button className="bg-navButtonBg py-2 md:py-3 px-3 text-sm md:text-base xl:text-lg rounded">
-              0xab...cd
-            </button>
-          </div>
-        ) : null}
+        <ConnectButton></ConnectButton>
       </div>
-      {/* Wrapper end */}
 
       <div className="md:hidden block">
         <div className="flex items-center justify-center gap-14 mt-4">
@@ -97,6 +86,15 @@ const Navbar = ({ launchApp }) => {
               {item.title}
             </NavLink>
           ))}
+          <a
+            href={"https://lila-finance.gitbook.io/lila-documentation/getting-started-with-cryptocurrency/what-is-decentralized-finance"}
+            key={4}
+            target="_blank"
+            rel="noopener noreferrer" // important for security reasons when using target='_blank'
+            className="text-sm md:text-lg lg:text-xl"
+          >
+            {"Docs"}
+          </a>
         </div>
       </div>
     </div>
