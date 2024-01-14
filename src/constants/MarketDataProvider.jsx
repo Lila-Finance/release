@@ -51,16 +51,16 @@ const marketContentsTemplate = [
     proxy_name: 'wbtc_aave_proxy',
     pool_index: [9, 10, 11]
   },
-  // {
-  //   id: 4,
-  //   coinName: "wETH",
-  //   wallet: "a.bc% - x.yz%",
-  //   topBg: "#48CBD9",
-  //   bottomCoin: "AAVE V3",
-  //   value: "0000.000000000",
-  //   proxy_name: 'weth_aave_proxy',
-  //   pool_index: [12, 13, 14]
-  // },
+  {
+    id: 4,
+    coinName: "wETH",
+    wallet: "a.bc% - x.yz%",
+    topBg: "#48CBD9",
+    bottomCoin: "AAVE V3",
+    value: "0000.000000000",
+    proxy_name: 'weth_aave_proxy',
+    pool_index: [12, 13, 14]
+  },
 ];
 
 export const MarketDataProvider = ({ children }) => {
