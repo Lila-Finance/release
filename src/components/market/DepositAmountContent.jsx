@@ -84,7 +84,7 @@ const DepositAmountContent = ({ toggleDeposit, selectedAsset, setSelectedAsset, 
                     <p className="text-lg xl:text-xl text-white">{bottomCoin}</p>
                     {/* value */}
                     <p className="text-sm xl:text-[15px] text-white pt-1.5">
-                    {(x => 5 * x * x + 15 * x + 10)(rate)} Minutes
+                    {(x => 5 * x * x + 15 * x + 10)(rate)} Months
                     </p>
                 </div>
             </div>

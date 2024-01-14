@@ -307,7 +307,7 @@ const PortfolioBanner = ({ activePositions, expiredPositions, connected }) => {
           <div className="w-full bg-portfolioBottomBg px-5 pt-16 pb-[22px]">
             {/* Monthly Yield */}
             <div className="flex items-center justify-between gap-2 mt-5">
-              <p className="text-sm lg:text-[17px] text-white">Ten Minute Yield</p>
+              <p className="text-sm lg:text-[17px] text-white">Monthly Yield</p>
               <p className="roboto text-sm lg:text-[17px] text-white">
                 ${toBigIntString(monthlyYeild, 3)}
               </p>
