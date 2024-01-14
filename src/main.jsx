@@ -5,7 +5,6 @@ import ReactDOM from 'react-dom';
 import App from "./App.jsx";
 import "./index.css";
 import Market from "./pages/Market.jsx";
-import Faucet from "./pages/Faucet.jsx";
 import Portfolio from "./pages/Portfolio.jsx";
 import { MarketDataProvider } from "../src/constants/MarketDataProvider";
 import '@rainbow-me/rainbowkit/styles.css';
@@ -26,9 +25,9 @@ import { publicProvider } from 'wagmi/providers/public';
 import { ExchangeRateProvider } from "./helpers/Converter.jsx";
 
 const { chains, publicClient } = configureChains(
-  [sepolia],
+  [arbitrum],
   [
-    alchemyProvider({ apiKey: '2s-1F2BiWb0o7mA2LieeKX4j46A0YhM3' }),
+    alchemyProvider({ apiKey: 'Wj9xJWTAnxnob5ftBVI3OiQ-zuCZwNrG' }),
     publicProvider()
   ]
 );
@@ -58,7 +57,6 @@ createRoot(document.getElementById("root")).render(
                   <Route path="/" element={<App />} />
                   <Route path="/market" element={<Market />} />
                   <Route path="/portfolio" element={<Portfolio />} />
-                  <Route path="/faucet" element={<Faucet />} />
                 </Routes>
               </HashRouter>
           </MarketDataProvider>

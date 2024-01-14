@@ -19,18 +19,13 @@ const Navbar = ({ launchApp }) => {
   const navLinks = [
     {
       id: 1,
-      title: "Testnet Market",
+      title: "Market",
       target: "/market",
     },
     {
       id: 2,
       title: "Portfolio",
       target: "/portfolio",
-    },
-    {
-      id: 3,
-      title: "Faucet",
-      target: "/faucet",
     },
   ];
 

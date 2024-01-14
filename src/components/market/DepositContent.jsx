@@ -103,7 +103,7 @@ const DepositContent = ({ selectedAsset, setSelectedAsset, deposit, setDeposit, 
       const domain = {
           name: coinName.toUpperCase(),
           version: "1",
-          chainId: 11155111,
+          chainId: 42161,
           verifyingContract: address.assets[coinName.toLowerCase()],
       };
 
