@@ -60,7 +60,7 @@ const Navbar = ({ launchApp }) => {
                 key={4}
                 target="_blank"
                 rel="noopener noreferrer" // important for security reasons when using target='_blank'
-                className="text-sm md:text-lg lg:text-xl"
+                className="text-sm md:text-base lg:text-lg"
               >
                 {"Docs"}
               </a>
