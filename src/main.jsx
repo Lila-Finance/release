@@ -44,7 +44,7 @@ const wagmiConfig = createConfig({
   publicClient
 })
 
-console.log(connectors())
+
 
 createRoot(document.getElementById("root")).render(  
     <React.StrictMode>

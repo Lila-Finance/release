@@ -84,7 +84,7 @@ const DepositAmountContent = ({ toggleDeposit, selectedAsset, setSelectedAsset, 
                     <p className="text-lg xl:text-xl text-white">{bottomCoin}</p>
                     {/* value */}
                     <p className="text-sm xl:text-[15px] text-white pt-1.5">
-                    {(x => 5 * x * x + 15 * x + 10)(rate)} Months
+                    {(x => 5 * x * x + 15 * x + 10)(rate)/10} Months
                     </p>
                 </div>
             </div>
@@ -171,16 +171,16 @@ const DepositAmountContent = ({ toggleDeposit, selectedAsset, setSelectedAsset, 
                             if (e.key === 'Enter') {
                                 // Print the input so far:
                                 const parts = inputRef.current.value.split('.');
-
+                                
                                 // Pad the decimal part to 5 digits
                                 const decimalPart = parts[1] ? parts[1].padEnd(5, '0') : '00000';
-
+                                
                                 // Concatenate the integer part and the padded decimal part
                                 const concatenated = parts[0] + decimalPart;
-
+                                
                                 // Convert to BigInt and return
                                 const value = BigInt(concatenated);
-
+                                
                                 if(value <= balance){
                                     toggleDeposit(value);
                                 }

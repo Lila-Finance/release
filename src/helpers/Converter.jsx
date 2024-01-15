@@ -51,6 +51,10 @@ export const ExchangeRateProvider = ({children}) => {
             if(btcExchangeRate != 0) {
                 sumTVL+= (BigInt(value) * BigInt((btcExchangeRate*100).toFixed(0)));
             }
+        }else if(token == "usdc.e"){
+            sumTVL+= (BigInt(value))*(BigInt("10000")); // 6 decimal places -> 10
+        }else if(token == "frax"){
+            sumTVL+= (BigInt(value))/(BigInt("100000000")); // 18 decimal places -> 10
         }
         
         return sumTVL
@@ -64,6 +68,9 @@ export const ExchangeRateProvider = ({children}) => {
         else if(token == "dai"){
             sumTVL+= (BigInt(value))/(BigInt("100000000")); // 18 decimal places -> 10
         }
+        else if(token == "frax"){
+            sumTVL+= (BigInt(value))/(BigInt("100000000")); // 18 decimal places -> 10
+        }
         else if(token == "usdt"){
             sumTVL+= (BigInt(value))*(BigInt("10000")); // 6 decimal places -> 10
         }
@@ -72,6 +79,9 @@ export const ExchangeRateProvider = ({children}) => {
         }
         else if(token == "wbtc"){
             sumTVL+= (BigInt(value) * BigInt((100).toFixed(0)));
+        }
+        else if(token == "usdc.e"){
+            sumTVL+= (BigInt(value))*(BigInt("10000")); // 6 decimal places -> 10
         }
         
         return sumTVL
@@ -85,6 +95,9 @@ export const ExchangeRateProvider = ({children}) => {
         else if(token == "dai"){
             sumTVL+= (BigInt(value))/(BigInt("10000000000000")); // 18 decimal places -> 5
         }
+        else if(token == "frax"){
+            sumTVL+= (BigInt(value))/(BigInt("10000000000000")); // 18 decimal places -> 5
+        }
         else if(token == "usdt"){
             sumTVL+= (BigInt(value))/(BigInt("10")); // 6 decimal places -> 5
         }
@@ -93,6 +106,9 @@ export const ExchangeRateProvider = ({children}) => {
         }
         else if(token == "wbtc"){
             sumTVL+= (BigInt(value))/(BigInt("1000")); // 8 decimal places -> 5
+        }
+        else if(token == "usdc.e"){
+            sumTVL+= (BigInt(value))/(BigInt("10")); // 6 decimal places -> 5
         }
         return sumTVL
     }
@@ -106,6 +122,9 @@ export const ExchangeRateProvider = ({children}) => {
         else if(token == "dai"){
             sumTVL+= value*(BigInt("10000000000000")); // 5 decimal places -> 18
         }
+        else if(token == "frax"){
+            sumTVL+= value*(BigInt("10000000000000")); // 5 decimal places -> 18
+        }
         else if(token == "usdt"){
             sumTVL+= BigInt(value)*(BigInt("10")); // 5 decimal places -> 6
         }
@@ -114,6 +133,9 @@ export const ExchangeRateProvider = ({children}) => {
         }
         else if(token == "wbtc"){
             sumTVL+= value*(BigInt("1000")); // 5 decimal places -> 8
+        }
+        else if(token == "usdc.e"){
+            sumTVL+= BigInt(value)*(BigInt("10")); // 5 decimal places -> 6
         }
         return sumTVL
     }

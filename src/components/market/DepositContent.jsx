@@ -55,13 +55,18 @@ const DepositContent = ({ selectedAsset, setSelectedAsset, deposit, setDeposit, 
           functionName: "name",
           args: [],
         })).toString();
-
-        const version = (await publicClient.readContract({
-          address: address.assets[coinName.toLowerCase()],
-          abi: IERC20.abi,
-          functionName: "version",
-          args: [],
-        })).toString();
+        let version = "1";
+        try {
+          version = (await publicClient.readContract({
+            address: address.assets[coinName.toLowerCase()],
+            abi: IERC20.abi,
+            functionName: "version",
+            args: [],
+          })).toString();
+        } catch (error) {
+          // console.log(error);
+        }
+        
       
       const correct_amount = FivDecBigIntToFull(amount, coinName.toLowerCase()); //TODO based on asset correct amount of zeros added
       
@@ -138,6 +143,12 @@ const DepositContent = ({ selectedAsset, setSelectedAsset, deposit, setDeposit, 
   }
 
   const convertBigInt = (amountv) => {
+    if(amountv < BigInt("100000")) {
+      amountv+=BigInt("100000")
+      const amountStr = amountv.toString();
+      const decimalStr = "0"+amountStr.slice(1, -5) + "." + amountStr.slice(-5);
+      return decimalStr;
+    }
     const amountStr = amountv.toString();
     const decimalStr = amountStr.slice(0, -5) + "." + amountStr.slice(-5);
     return decimalStr;

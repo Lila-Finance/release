@@ -76,6 +76,7 @@ const Portfolio = () => {
         functionName: "getKey",
         args: [Pool.strategy, Pool.totalPayments, Position['rateIndex']],
       }));
+      
 
       const rate = (await publicClient.readContract({
         address: address.core.oracle_address,
@@ -83,6 +84,7 @@ const Portfolio = () => {
         functionName: "getNumerator",
         args: [rateKey],
       }));
+
       const amountUSD = await to10DecUSD(Position.amount, toTokenFromAddress(Pool.asset));
       const amount = await to10Dec(Position.amount, toTokenFromAddress(Pool.asset));
 

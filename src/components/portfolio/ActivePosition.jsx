@@ -22,6 +22,7 @@ const ActivePosition = ({activePositions, connected}) => {
       const pos = positions[position];
       
       const asset = address.asset_addresses[pos.pool.asset.toLowerCase()].toUpperCase();
+
       const duration = Number(pos.pool.totalPayments);
       const rate = Number(pos.rate*(BigInt((365*24*60*60)/600)))/1000000000;
       
