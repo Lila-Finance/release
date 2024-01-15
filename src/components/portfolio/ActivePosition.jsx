@@ -38,7 +38,7 @@ const ActivePosition = ({activePositions, connected}) => {
         parcent: `${rate}%`,
         month: toBigIntString(interest),
         coinName: "AAVE V3",
-        timeline: `${duration*10} Minute`,
+        timeline: `${duration} Month${duration == 1 ? '' : 's'}`,
         expire: formattedDate,
       }
       newPositions.push(newPosition)
@@ -103,7 +103,7 @@ const ActivePosition = ({activePositions, connected}) => {
 
                     {/* month */}
                     <p className="text-[13px] md:text-[15px] text-white pt-2.5">
-                      {month} per 10 Min.
+                      {month} per Mo.
                     </p>
                   </div>
                 </div>

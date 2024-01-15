@@ -6,6 +6,7 @@ import { signTypedData } from '@wagmi/core'
 import address from "../../data/address.json";
 
 import IERC20Permit from "../../abi/IERC20Permit.json";
+import IERC20 from "../../abi/IERC20.json";
 import { ExchangeRateContext } from "../../helpers/Converter";
 
 import {useContractWrite, useContractEvent} from "wagmi";
@@ -46,6 +47,20 @@ const DepositContent = ({ selectedAsset, setSelectedAsset, deposit, setDeposit, 
           abi: IERC20Permit.abi,
           functionName: "nonces",
           args: [userAddress],
+        })).toString();
+
+      const name = (await publicClient.readContract({
+          address: address.assets[coinName.toLowerCase()],
+          abi: IERC20.abi,
+          functionName: "name",
+          args: [],
+        })).toString();
+
+        const version = (await publicClient.readContract({
+          address: address.assets[coinName.toLowerCase()],
+          abi: IERC20.abi,
+          functionName: "version",
+          args: [],
         })).toString();
       
       const correct_amount = FivDecBigIntToFull(amount, coinName.toLowerCase()); //TODO based on asset correct amount of zeros added
@@ -101,8 +116,8 @@ const DepositContent = ({ selectedAsset, setSelectedAsset, deposit, setDeposit, 
       };
       
       const domain = {
-          name: coinName.toUpperCase(),
-          version: "1",
+          name: name,
+          version: version,
           chainId: 42161,
           verifyingContract: address.assets[coinName.toLowerCase()],
       };

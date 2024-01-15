@@ -61,6 +61,26 @@ const marketContentsTemplate = [
     proxy_name: 'weth_aave_proxy',
     pool_index: [12, 13, 14]
   },
+  {
+    id: 5,
+    coinName: "USDC.e",
+    wallet: "a.bc% - x.yz%",
+    topBg: "#2774CA",
+    bottomCoin: "AAVE V3",
+    value: "0000.000000000",
+    proxy_name: 'usdc_aave_proxy',
+    pool_index: [15, 16, 17]
+  },
+  {
+    id: 6,
+    coinName: "Frax",
+    wallet: "a.bc% - x.yz%",
+    topBg: "#000000",
+    bottomCoin: "AAVE V3",
+    value: "0000.000000000",
+    proxy_name: 'usdc_aave_proxy',
+    pool_index: [18, 19, 20]
+  },
 ];
 
 export const MarketDataProvider = ({ children }) => {

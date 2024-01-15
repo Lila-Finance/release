@@ -9,20 +9,26 @@
         "dai_aave_proxy": "0x40322ef429ea2d94c9769691B9C59f2A51271996",
         "usdt_aave_proxy": "0xdCC1509e687a1dec30FE1145253aC0eD1eb3012D",
         "wbtc_aave_proxy": "0x7abC7a5D653c7E04f9864780500FDc519768fbCb",
-        "weth_aave_proxy": "0xD6827076A91ff31656a926241e6524eA4F25F3B5"
+        "weth_aave_proxy": "0xD6827076A91ff31656a926241e6524eA4F25F3B5",
+        "frax_aave_proxy": "0x5c2c8F52be40BfBB9f30AD3f409d135e27Cb9d93",
+        "usdc.e_aave_proxy": "0x1dD03ff49FBfD824C8bd8f8cfbABe7898d727442"
     },
     "assets": {
         "usdc": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
         "dai": "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
         "usdt": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
         "wbtc": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
-        "weth": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1"
+        "weth": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+        "frax": "0x17fc002b466eec40dae837fc4be5c67993ddbd6f",
+        "usdc.e": "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8"
     },
     "asset_addresses": {
         "0xaf88d065e77c8cC2239327C5EDb3A432268e5831" : "usdc",
         "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1" : "dai",
         "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9" : "usdt",
         "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f" : "wbtc",
-        "0x82af49447d8a07e3bd95bd0d56f35241523fbab1" : "weth"        
+        "0x82af49447d8a07e3bd95bd0d56f35241523fbab1" : "weth",
+        "0x17fc002b466eec40dae837fc4be5c67993ddbd6f" : "frax",
+        "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8" : "usdc.e"       
     }
 }

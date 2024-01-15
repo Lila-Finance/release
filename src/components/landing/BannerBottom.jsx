@@ -44,7 +44,7 @@ const BannerBottom = () => {
 
       const interval = setInterval(() => {
           getTotalTVL();
-      }, 8000);
+      }, 2000);
 
       return () => clearInterval(interval);
   }, []);
