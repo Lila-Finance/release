@@ -5,7 +5,7 @@ const MonthSelection = ({ toggleDeposit, selectedAsset, setSelectedAsset }) => {
   // data
   const { marketContents } = useContext(MarketDataContext);
   let globitem = selectedAsset == -1 ? undefined : marketContents.filter(item => item.id == selectedAsset);
-  const { bottomCoin, coinName, id, topBg, value, wallet } = globitem[0];
+  const { bottomCoin, coinName, id, topBg, value, wallet, bottomBg } = globitem[0];
   
   if(globitem == undefined || globitem[0] == undefined || globitem[0]['rates'] == undefined){
     return (
@@ -59,7 +59,7 @@ const MonthSelection = ({ toggleDeposit, selectedAsset, setSelectedAsset }) => {
             </div>
 
             {/* Bottom Content */}
-            <div className="w-full bg-aaveBg pb-3.5 px-3.5 pt-8 text-end">
+            <div className="w-full pb-3.5 px-3.5 pt-8 text-end" style={{ backgroundColor: bottomBg }}>
               {/* name */}
               <p className="text-lg xl:text-xl text-white">{bottomCoin}</p>
               {/* value */}
@@ -73,7 +73,8 @@ const MonthSelection = ({ toggleDeposit, selectedAsset, setSelectedAsset }) => {
 
         return (
           <div
-            className="bg-aaveBg ml-5 pb-3.5 px-3.5 mt-[92px] pt-8 text-end cursor-pointer max-h-[100px] max-w-[233.59px] min-w-[233.59px] animate-slideIn"
+            style={{ backgroundColor: bottomBg }}
+            className="ml-5 pb-3.5 px-3.5 mt-[92px] pt-8 text-end cursor-pointer max-h-[100px] max-w-[233.59px] min-w-[233.59px] animate-slideIn"
             onAnimationEnd={() => setIsAnimationDone(false)}
             key={id}
           >
@@ -114,7 +115,7 @@ const MonthSelection = ({ toggleDeposit, selectedAsset, setSelectedAsset }) => {
           </div>
 
           {/* Bottom Content */}
-          <div className="w-full bg-aaveBg pb-3.5 px-3.5 pt-8 text-end">
+          <div className="w-full pb-3.5 px-3.5 pt-8 text-end" style={{ backgroundColor: bottomBg }}>
             {/* name */}
             <p className="text-lg xl:text-xl text-white">{bottomCoin}</p>
             {/* value */}
@@ -129,7 +130,8 @@ const MonthSelection = ({ toggleDeposit, selectedAsset, setSelectedAsset }) => {
 
         return (
           <div
-            className="w-full bg-aaveBg pb-3.5 px-3.5 pt-8 text-end cursor-pointer"
+            style={{ backgroundColor: bottomBg }}
+            className="w-full pb-3.5 px-3.5 pt-8 text-end cursor-pointer"
             key={id}
             onClick={() => toggleDeposit(id)}
           >

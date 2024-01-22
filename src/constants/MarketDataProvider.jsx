@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-
+const aaveBg= "#B6509E";
+const radiantBg= "#6893CC";
 import {AaveV3Rates} from "./AaveV3Rates";
 
 import address from "../data/address.json"
@@ -16,6 +17,7 @@ const marketContentsTemplate = [
     coinName: "USDC",
     wallet: "a.bc% - x.yz%",
     topBg: "#2774CA",
+    bottomBg: aaveBg,
     bottomCoin: "AAVE V3",
     value: "0000.000000000",
     proxy_name: 'usdc_aave_proxy',
@@ -26,6 +28,7 @@ const marketContentsTemplate = [
     coinName: "DAI",
     wallet: "a.bc% - x.yz%",
     topBg: "#F4B731",
+    bottomBg: aaveBg,
     bottomCoin: "AAVE V3",
     value: "0000.000000000",
     proxy_name: 'dai_aave_proxy',
@@ -36,6 +39,7 @@ const marketContentsTemplate = [
     coinName: "USDT",
     wallet: "a.bc% - x.yz%",
     topBg: "#26A17B",
+    bottomBg: aaveBg,
     bottomCoin: "AAVE V3",
     value: "0000.000000000",
     proxy_name: 'usdt_aave_proxy',
@@ -46,6 +50,7 @@ const marketContentsTemplate = [
     coinName: "wBTC",
     wallet: "a.bc% - x.yz%",
     topBg: "#F09242",
+    bottomBg: aaveBg,
     bottomCoin: "AAVE V3",
     value: "0000.000000000",
     proxy_name: 'wbtc_aave_proxy',
@@ -56,6 +61,7 @@ const marketContentsTemplate = [
     coinName: "wETH",
     wallet: "a.bc% - x.yz%",
     topBg: "#48CBD9",
+    bottomBg: aaveBg,
     bottomCoin: "AAVE V3",
     value: "0000.000000000",
     proxy_name: 'weth_aave_proxy',
@@ -66,6 +72,7 @@ const marketContentsTemplate = [
     coinName: "Frax",
     wallet: "a.bc% - x.yz%",
     topBg: "#000000",
+    bottomBg: aaveBg,
     bottomCoin: "AAVE V3",
     value: "0000.000000000",
     proxy_name: 'frax_aave_proxy',
@@ -76,10 +83,22 @@ const marketContentsTemplate = [
     coinName: "USDC.e",
     wallet: "a.bc% - x.yz%",
     topBg: "#2774CA",
+    bottomBg: aaveBg,
     bottomCoin: "AAVE V3",
     value: "0000.000000000",
     proxy_name: 'usdc.e_aave_proxy',
     pool_index: [18, 19, 20]
+  },
+  {
+    id: 7,
+    coinName: "wstETH",
+    wallet: "a.bc% - x.yz%",
+    topBg: "#00A3FF",
+    bottomBg: radiantBg,
+    bottomCoin: "Radiant",
+    value: "0000.000000000",
+    proxy_name: 'wsteth_radi_proxy',
+    pool_index: [21, 22, 23]
   },
 ];
 

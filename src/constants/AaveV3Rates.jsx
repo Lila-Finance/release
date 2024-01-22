@@ -1,45 +1,50 @@
 export const AaveV3Rates = [
     {
-        TOKEN: "USDC",
-        ONE_MONTH: "6.7168",
-        THREE_MONTH: "5.1224",
-        SIX_MONTH: "3.4402"
+        "TOKEN": "USDC",
+        "ONE_MONTH": "8.3418",
+        "THREE_MONTH": "7.0976",
+        "SIX_MONTH": "5.4970"
     },
     {
-        TOKEN: "USDC.e",
-        ONE_MONTH: "6.4862",
-        THREE_MONTH: "5.3937",
-        SIX_MONTH: "4.0419"
+        "TOKEN": "DAI",
+        "ONE_MONTH": "9.0214",
+        "THREE_MONTH": "7.0708",
+        "SIX_MONTH": "5.2606"
     },
     {
-        TOKEN: "DAI",
-        ONE_MONTH: "7.0389",
-        THREE_MONTH: "5.7098",
-        SIX_MONTH: "4.0128"
+        "TOKEN": "USDT",
+        "ONE_MONTH": "8.8002",
+        "THREE_MONTH": "7.0158",
+        "SIX_MONTH": "5.4227"
     },
     {
-        TOKEN: "USDT",
-        ONE_MONTH: "6.4466",
-        THREE_MONTH: "5.1968",
-        SIX_MONTH: "3.7659"
+        "TOKEN": "wBTC",
+        "ONE_MONTH": "0.035853",
+        "THREE_MONTH": "0.06843222",
+        "SIX_MONTH": "0.05512911"
     },
     {
-        TOKEN: "Frax",
-        ONE_MONTH: "5.3082",
-        THREE_MONTH: "4.7451",
-        SIX_MONTH: "3.5128"
+        "TOKEN": "wETH",
+        "ONE_MONTH": "1.17502433",
+        "THREE_MONTH": "1.20888433",
+        "SIX_MONTH": "1.18372533"
     },
     {
-        TOKEN: "wETH",
-        ONE_MONTH: "1.17502433",
-        THREE_MONTH: "1.20888433",
-        SIX_MONTH: "1.18372533"
+        "TOKEN": "Frax",
+        "ONE_MONTH": "6.8412",
+        "THREE_MONTH": "6.4475",
+        "SIX_MONTH": "3.5128"
     },
     {
-        TOKEN: "wBTC",
-        ONE_MONTH: "0.035853",
-        THREE_MONTH: "0.06843222",
-        SIX_MONTH: "0.05512911"
+        "TOKEN": "USDC.e",
+        "ONE_MONTH": "8.0230",
+        "THREE_MONTH": "6.9910",
+        "SIX_MONTH": "5.6362"
+    },
+    {
+        "TOKEN": "wstETH",
+        "ONE_MONTH": "0.3785",
+        "THREE_MONTH": "0.3126",
+        "SIX_MONTH": "0.2971"
     }
-  ];
-  
+];

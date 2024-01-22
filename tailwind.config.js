@@ -10,6 +10,7 @@ export default {
         navButtonBg: "#FFC9C9",
         arbitrumBg: "rgba(27, 74, 221, 0.87)",
         aaveBg: "#B6509E",
+        radiantBg: "#6893CC",
         depositBg: "rgba(255, 201, 201, 0.50)",
         portfolioBottomBg: "#830707",
       },

@@ -34,6 +34,7 @@ const ActivePosition = ({activePositions, connected}) => {
       const newPosition = {
         id: position,
         topBg: coinNameToColor(asset),
+        bottomBg: (asset.toLowerCase() == "wsteth" ? "#6893CC" : "#B6509E"),
         title: asset,
         deposit: toBigIntString(pos.amount),
         parcent: `${rate}%`,
@@ -75,7 +76,9 @@ const ActivePosition = ({activePositions, connected}) => {
               timeline,
               title,
               topBg,
+              bottomBg
             } = item;
+            // console.log(item);
 
             return (
               <div
@@ -110,7 +113,8 @@ const ActivePosition = ({activePositions, connected}) => {
                 </div>
 
                 {/* Bottom Content */}
-                <div className="w-full bg-aaveBg pt-9 pb-4 px-4 text-end">
+                {/* <div className={`w-full bg-[${bottomBg}] pt-9 pb-4 px-4 text-end`}> */}
+                <div className="w-full pt-9 pb-4 px-4 text-end" style={{ backgroundColor: bottomBg }}>
                   {/* coin name */}
                   <h3 className="text-xl text-white">{coinName}</h3>
 

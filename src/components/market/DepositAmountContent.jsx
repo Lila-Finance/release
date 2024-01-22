@@ -15,7 +15,7 @@ const DepositAmountContent = ({ toggleDeposit, selectedAsset, setSelectedAsset, 
         const { publicClient, userAddress, to5DecValue } = useContext(ExchangeRateContext);
         const { marketContents } = useContext(MarketDataContext);
         let globitem = selectedAsset == -1 ? undefined : marketContents.filter(item => item.id == selectedAsset);
-        const { bottomCoin, coinName, id, topBg, value, wallet, rates } = globitem[0];
+        const { bottomCoin, coinName, id, topBg, value, wallet, rates, bottomBg } = globitem[0];
         
         const [balance, setBalance] = useState(BigInt(0));
 
@@ -42,6 +42,8 @@ const DepositAmountContent = ({ toggleDeposit, selectedAsset, setSelectedAsset, 
                     functionName: "balanceOf",
                     args: [userAddress],
                 });
+                // console.log(tokenAddress);
+                // console.log(BALANCE.toString());
                 setBalance(BigInt(BALANCE.toString()));
             }            
         };
@@ -79,7 +81,7 @@ const DepositAmountContent = ({ toggleDeposit, selectedAsset, setSelectedAsset, 
                 </div>
 
                 {/* Bottom Content */}
-                <div className="w-full bg-aaveBg pb-3.5 px-3.5 pt-8 text-end">
+                <div className="w-full pb-3.5 px-3.5 pt-8 text-end" style={{ backgroundColor: bottomBg }}>
                     {/* name */}
                     <p className="text-lg xl:text-xl text-white">{bottomCoin}</p>
                     {/* value */}

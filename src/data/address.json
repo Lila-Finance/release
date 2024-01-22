@@ -11,7 +11,8 @@
         "wbtc_aave_proxy": "0x7abC7a5D653c7E04f9864780500FDc519768fbCb",
         "weth_aave_proxy": "0xD6827076A91ff31656a926241e6524eA4F25F3B5",
         "frax_aave_proxy": "0x5c2c8F52be40BfBB9f30AD3f409d135e27Cb9d93",
-        "usdc.e_aave_proxy": "0x1dD03ff49FBfD824C8bd8f8cfbABe7898d727442"
+        "usdc.e_aave_proxy": "0x1dD03ff49FBfD824C8bd8f8cfbABe7898d727442",
+        "wsteth_radi_proxy": "0xDd850C4A6BCfcaB279D7365aAA6E8d950fAA7e68"
     },
     "assets": {
         "usdc": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
@@ -20,7 +21,8 @@
         "wbtc": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
         "weth": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
         "frax": "0x17fc002b466eec40dae837fc4be5c67993ddbd6f",
-        "usdc.e": "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8"
+        "usdc.e": "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
+        "wsteth": "0x5979d7b546e38e414f7e9822514be443a4800529"
     },
     "asset_addresses": {
         "0xaf88d065e77c8cc2239327c5edb3a432268e5831" : "usdc",
@@ -29,6 +31,7 @@
         "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f" : "wbtc",
         "0x82af49447d8a07e3bd95bd0d56f35241523fbab1" : "weth",
         "0x17fc002b466eec40dae837fc4be5c67993ddbd6f" : "frax",
-        "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8" : "usdc.e"       
+        "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8" : "usdc.e",
+        "0x5979d7b546e38e414f7e9822514be443a4800529" : "wsteth"       
     }
 }

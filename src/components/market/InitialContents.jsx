@@ -10,7 +10,7 @@ const InitialContents = ({ setSelectedAsset, selectedAsset }) => {
         {selectedAsset == -1 ?  
         <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-5">
           {marketContents.map((item) => {
-            const { bottomCoin, coinName, id, topBg, value, wallet } = item;
+            const { bottomCoin, coinName, id, topBg, value, wallet, bottomBg } = item;
               return (
                 <div className="w-full h-full cursor-pointer" key={id} onClick={() => setSelectedAsset(id)}>
                   {/* top content */}
@@ -38,7 +38,7 @@ const InitialContents = ({ setSelectedAsset, selectedAsset }) => {
                   </div>
 
                   {/* Bottom Content */}
-                  <div className="w-full bg-aaveBg pb-3.5 px-3.5 pt-8 text-end">
+                  <div className="w-full pb-3.5 px-3.5 pt-8 text-end" style={{ backgroundColor: bottomBg }}>
                     {/* name */}
                     <p className="text-lg xl:text-xl text-white">{bottomCoin}</p>
                     {/* value */}

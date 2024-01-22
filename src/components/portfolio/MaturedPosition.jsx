@@ -114,6 +114,7 @@ const MaturedPosition = ({expiredPositions, connected}) => {
               timeline,
               title,
               topBg,
+              bottomBg
             } = item;
 
             if(hiddenMore && indx > 2){
@@ -153,7 +154,9 @@ const MaturedPosition = ({expiredPositions, connected}) => {
                 </div>
 
                 {/* Bottom Content */}
-                <div className="w-full bg-aaveBg pt-9 pb-4 px-4 text-end">
+                <div className="w-full pt-9 pb-4 px-4 text-end" style={{ backgroundColor: bottomBg }}>
+
+                  {/* backgroundColor: `${bototmBG}`, */}
                   {/* coin name */}
                   <h3 className="text-xl text-white">{coinName}</h3>
 

@@ -16,7 +16,7 @@ import ILilaPoolsProvider from "../../abi/ILilaPoolsProvider.json";
 const DepositContent = ({ selectedAsset, setSelectedAsset, deposit, setDeposit, setFinalize, finalize, amount, month }) => {
   const { marketContents } = useContext(MarketDataContext);
   let globitem = selectedAsset == -1 ? undefined : marketContents.filter(item => item.id == selectedAsset);
-  const { bottomCoin, coinName, id, topBg, value, wallet, pool_index, rates } = globitem[0];
+  const { bottomCoin, coinName, id, topBg, value, wallet, pool_index, rates, bottomBg } = globitem[0];
   const { publicClient, userAddress, FivDecBigIntToFull } = useContext(ExchangeRateContext);
 
   const [done, setDone] = useState(false);
@@ -34,12 +34,32 @@ const DepositContent = ({ selectedAsset, setSelectedAsset, deposit, setDeposit, 
     setDepositLoading(true);
     depositContractR();
   }
+
+  const {
+    data: dataAllow,
+    isLoading: isLoadingAllow,
+    isSuccess: isSuccessAllow,
+    write: allow,
+} = useContractWrite({
+    address: address.assets[coinName.toLowerCase()],
+    abi: IERC20.abi,
+    functionName: "approve",
+    args: [address.core.poolprovider_address, FivDecBigIntToFull(amount, coinName.toLowerCase())],
+});
+
     
   const allowAmount = async () => {
 
     if(userAddress == undefined || publicClient == undefined){
       return;
     }
+    if(coinName.toLowerCase() == "wsteth"){
+      allow();
+      const correct_amount = FivDecBigIntToFull(amount, coinName.toLowerCase());
+      setDepositArgs([correct_amount, pool_index[month]]);
+      setDeposit();
+    }else{
+
       const expiry = Math.trunc((Date.now() + 300 * 1000) / 1000)
       
       const nonce = (await publicClient.readContract({
@@ -140,6 +160,7 @@ const DepositContent = ({ selectedAsset, setSelectedAsset, deposit, setDeposit, 
       
       setDepositArgs([correct_amount, pool_index[month], expiry, v, r, s]);
       setDeposit();
+    }
   }
 
   const convertBigInt = (amountv) => {
@@ -203,7 +224,7 @@ const DepositContent = ({ selectedAsset, setSelectedAsset, deposit, setDeposit, 
                 </div>
 
                 {/* Bottom Content */}
-                <div className="w-full bg-aaveBg pb-3.5 px-3.5 pt-8 text-end">
+                <div className="w-full pb-3.5 px-3.5 pt-8 text-end" style={{ backgroundColor: bottomBg }}>
                     {/* name */}
                     <p className="text-lg xl:text-xl text-white">{bottomCoin}</p>
                     {/* value */}

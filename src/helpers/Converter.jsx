@@ -43,6 +43,15 @@ export const ExchangeRateProvider = ({children}) => {
                 sumTVL+= (BigInt(value)*BigInt((ethExchangeRate*100).toFixed(0)))/(BigInt("10000000000"));
             }
         }
+        else if(token == "wsteth"){
+            const ethResponse = await fetch('https://production.api.coindesk.com/v2/tb/price/ticker?assets=ETH');
+            const ethData = await ethResponse.json();
+            const ethExchangeRate = ethData.data.ETH.ohlc.c;
+
+            if(ethExchangeRate != 0) { 
+                sumTVL+= (BigInt(value)*BigInt((ethExchangeRate*100).toFixed(0)))/(BigInt("10000000000"));
+            }
+        }
         else if(token == "wbtc"){
             const btcResponse = await fetch('https://production.api.coindesk.com/v2/tb/price/ticker?assets=BTC');
             const btcData = await btcResponse.json();
@@ -77,6 +86,9 @@ export const ExchangeRateProvider = ({children}) => {
         else if(token == "weth"){
             sumTVL+= (BigInt(value)*BigInt((100).toFixed(0)))/(BigInt("10000000000"));
         }
+        else if(token == "wsteth"){
+            sumTVL+= (BigInt(value)*BigInt((100).toFixed(0)))/(BigInt("10000000000"));
+        }
         else if(token == "wbtc"){
             sumTVL+= (BigInt(value) * BigInt((100).toFixed(0)));
         }
@@ -104,6 +116,9 @@ export const ExchangeRateProvider = ({children}) => {
         else if(token == "weth"){
             sumTVL+= (BigInt(value))/(BigInt("10000000000000")); // 18 decimal places -> 5
         }
+        else if(token == "wsteth"){
+            sumTVL+= (BigInt(value))/(BigInt("10000000000000")); // 18 decimal places -> 5
+        }
         else if(token == "wbtc"){
             sumTVL+= (BigInt(value))/(BigInt("1000")); // 8 decimal places -> 5
         }
@@ -129,6 +144,9 @@ export const ExchangeRateProvider = ({children}) => {
             sumTVL+= BigInt(value)*(BigInt("10")); // 5 decimal places -> 6
         }
         else if(token == "weth"){
+            sumTVL+= value*(BigInt("10000000000000")); // 5 decimal places -> 18
+        }
+        else if(token == "wsteth"){
             sumTVL+= value*(BigInt("10000000000000")); // 5 decimal places -> 18
         }
         else if(token == "wbtc"){
