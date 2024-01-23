@@ -100,7 +100,7 @@ const PortfolioBanner = ({ activePositions, expiredPositions, connected }) => {
         continue;
       }
 
-      const interest = (pos.amountUSD*pos.rate/BigInt(12*100000000000));
+      const interest = (pos.amountUSD*pos.rate/BigInt(100000000000));
       sumMonthlyYeild += interest;
     }
     setMonthlyYeild(sumMonthlyYeild);
