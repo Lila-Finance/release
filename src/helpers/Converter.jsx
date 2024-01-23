@@ -43,15 +43,20 @@ export const ExchangeRateProvider = ({children}) => {
                 sumTVL+= (BigInt(value)*BigInt((ethExchangeRate*100).toFixed(0)))/(BigInt("10000000000"));
             }
         }
-        else if(token == "wsteth"){
-            const ethResponse = await fetch('https://production.api.coindesk.com/v2/tb/price/ticker?assets=ETH');
-            const ethData = await ethResponse.json();
-            const ethExchangeRate = ethData.data.ETH.ohlc.c;
-
-            if(ethExchangeRate != 0) { 
-                sumTVL+= (BigInt(value)*BigInt((ethExchangeRate*100).toFixed(0)))/(BigInt("10000000000"));
+        else if (token == "wsteth") {
+            const geckoResponse = await fetch('https://api.geckoterminal.com/api/v2/simple/networks/eth/token_price/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0', {
+                method: 'GET',
+                headers: {
+                    'accept': 'application/json'
+                }
+            });
+            const geckoData = await geckoResponse.json();
+            const ethExchangeRate = parseFloat(geckoData.data.attributes.token_prices["0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0"]);
+        
+            if (ethExchangeRate != 0) {
+                sumTVL += (BigInt(value) * BigInt((ethExchangeRate * 100).toFixed(0))) / (BigInt("10000000000"));
             }
-        }
+        }        
         else if(token == "wbtc"){
             const btcResponse = await fetch('https://production.api.coindesk.com/v2/tb/price/ticker?assets=BTC');
             const btcData = await btcResponse.json();
