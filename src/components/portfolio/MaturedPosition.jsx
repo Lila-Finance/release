@@ -25,7 +25,7 @@ const MaturedPosition = ({expiredPositions, connected}) => {
       
       const asset = address.asset_addresses[pos.pool.asset.toLowerCase()].toUpperCase();
       const duration = Number(pos.pool.totalPayments);
-      const rate = Number(pos.rate*(BigInt((365*24*60*60)/600)))/1000000000;
+      const rate = Number(pos.rate*(BigInt(12)))/1000000000;
       
       const interest = (pos.amount*pos.rate/BigInt(100000000000));
       const endDate = new Date((Number(pos.position.startTime)+duration*Number(pos.pool.payoutFrequency))*1000);
